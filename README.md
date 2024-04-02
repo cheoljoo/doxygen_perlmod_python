@@ -15,3 +15,8 @@
 - output
 	- test-1/output/perlmod/output.md : show markdown including plantuml with vscode (useful extension : markdown preview enhanced)
 
+
+# TODO
+- make html output with plantuml server 
+- make alternative url in html : we can use png file when we have some error to connect to plantuml server
+- use mako
