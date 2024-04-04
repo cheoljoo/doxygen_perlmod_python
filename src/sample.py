@@ -3,6 +3,7 @@ sys.path.append(os.getcwd())
 import mysetting
 import DoxyDocs
 import argparse
+import mysetting
 
 class DoxyDocsClass :
     '''
@@ -34,6 +35,215 @@ class DoxyDocsClass :
             self.runMarkdown()
 
     def runHtml(self):
+        self.print(0,'<!DOCTYPE html>\n<html>')
+        self.print(0,"""
+
+<head>
+    <meta charset="UTF-8">
+    <title>DoxyDocs</title>
+    <style>
+        body {
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto,
+              Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background-color: #fff;
+            padding: 0 5vw;
+          }
+          
+          /* Standard Tables */
+          
+          table {
+            margin: 1em 0;
+            border-collapse: collapse;
+            border: 0.1em solid #d6d6d6;
+          }
+          
+          caption {
+            text-align: left;
+            font-style: italic;
+            padding: 0.25em 0.5em 0.5em 0.5em;
+          }
+          
+          th,
+          td {
+            padding: 0.25em 0.5em 0.25em 1em;
+            vertical-align: text-top;
+            /* text-align: left; */
+            text-indent: -0.5em;
+          }
+          
+          th {
+            vertical-align: top;
+            /* background-color: #666;
+            color: #fff; */
+          }
+          
+          tr:nth-child(even) th[scope=row] {
+            background-color: #f2f2f2;
+          }
+          
+          tr:nth-child(odd) th[scope=row] {
+            background-color: #fff;
+          }
+          
+          tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.05);
+          }
+          
+          tr:nth-child(odd) {
+            background-color: rgba(255, 255, 255, 0.05);
+          }
+          
+          td:nth-of-type(2) {
+            font-style: italic;
+          }
+          
+          th:nth-of-type(1) {
+            text-align: left;
+            vertical-align: top;
+            background-color: #666;
+            color: #fff;
+          }
+          /*
+          th:nth-of-type(3),
+          td:nth-of-type(3) {
+            text-align: right;
+          }
+          */
+          
+          /* Fixed Headers */
+          
+          th {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+          }
+          
+          th[scope=row] {
+            position: -webkit-sticky;
+            position: sticky;
+            left: 0;
+            z-index: 1;
+          }
+          
+          th[scope=row] {
+            vertical-align: top;
+            color: inherit;
+            background-color: inherit;
+            background: linear-gradient(90deg, transparent 0%, transparent calc(100% - .05em), #d6d6d6 calc(100% - .05em), #d6d6d6 100%);
+          }
+          
+          table:nth-of-type(2) th:not([scope=row]):first-child {
+            left: 0;
+            z-index: 3;
+            background: linear-gradient(90deg, #666 0%, #666 calc(100% - .05em), #ccc calc(100% - .05em), #ccc 100%);
+          }
+          
+          /* Strictly for making the scrolling happen. */
+          
+          /*
+          th[scope=row] + td {
+            min-width: 24em;
+          }
+          
+          th[scope=row] {
+            min-width: 20em;
+          }
+          */
+          
+          body {
+            padding-bottom: 90vh;
+          }
+    </style>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+#myTableInput {
+  /* background-image: url('/css/searchicon.png'); */
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+
+#myCbInput {
+  /* background-image: url('/css/searchicon.png'); */
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+</style>
+</head>
+                """)
+        self.print(0,'<body>')
+        self.print(0,'<h1>classes</h1>')
+        self.print(0,'<table>')
+        self.print(1,'<tr><th>Class</th><th>Derived</th><th>Includes</th><th>Brief</th><th>Detailed Description</th></tr>')
+        self.cls = {}
+        for k,v in self.D['classes'].items():
+            self.cls[k] = {}
+            name = v['name']
+            includes = v.get('includes',{}).get('name','')
+            self.cls[k]['name'] = name
+            self.cls[k]['brief'] = self.getDescription(doc=v.get('brief',{}).get('doc',{}))
+            self.cls[k]['detailed'] = self.getDescription(doc=v.get('detailed',{}).get('doc',{}))
+            self.cls[k]['derived'] = []
+            for k1,v2 in v.get('derived',{}).items():
+                self.cls[k]['derived'].append(v2.get('name',''))
+            self.cls[k]['includes'] = includes
+            t = self.cls[k]
+            self.print(1,'''<tr><td>{name}</td><td>{drived}</td><td>{includes}</td><td>{brief}</td><td>{detail}</td></tr>'''.format(name=t['name'],brief=t['brief'],drived=' '.join(t['derived']),includes=t['includes'],detail=t['detailed']))
+        self.print(0,'</table>')
+        self.print(0,'')
+
+        for k,v in self.D['classes'].items():
+            self.print(0,'<h2>Function Lists of {c} class</h2>'.format(c=v['name']))
+            # plantuml
+            plantuml = self.getPlantuml(doc=v.get('detailed',{}).get('doc',{}))
+            for p in plantuml:
+                self.plantumlCnt += 1
+                with open('test-{c}.puml'.format(c=self.plantumlCnt),'w') as f:
+                    f.write('@startuml test-{c}.png\n'.format(c=self.plantumlCnt))
+                    f.write(p)
+                    f.write('\n@enduml\n')
+                proxylink = '{proxy}&src={puml}/{file}'.format(proxy=mysetting.myPlantumlServerProxy , puml=mysetting.mySrcDirHttp , file='test-{c}.puml'.format(c=self.plantumlCnt))
+                self.print(2,'''<img src="{src}" alt="test-{c}.puml">'''.format(src=proxylink,c=self.plantumlCnt))
+
+            # Table
+            self.print(2,'<table>')
+            self.print(2,'<tr><th>Accessibility</th><th>Function</th><th>Description</th><th>Parameters</th><th>param input</th><th>param output</th><th>Returns</th><th>return Description</th></tr>')
+            for accessibility,v2 in v.items():
+                if accessibility == 'public_methods':
+                    for k3,v3 in v2.get('members',{}).items():
+                        t = v2['members'][k3]
+                        func = t['name']
+                        brief = self.getDescription(doc=t.get('brief',{}).get('doc',{}))
+                        detailed = self.getDescription(doc=t.get('detailed',{}).get('doc',{}))
+                        returnType = t.get('type','')
+                        # returnDoc = []
+                        returnDoc = self.ret.join(self.getReturnDescription(doc=t.get('detailed',{}).get('doc',{})))
+                        # params = { 'parameters': [] , 'in':[] , 'out':[] }
+                        params = self.getParameters(parameters=t.get('parameters',{}),detailed_doc=t.get('detailed',{}).get('doc',{}))
+                         #print('a',accessibility,func,detailed)
+                         #print('r',returnType,returnDoc)
+                         #print((self.ret).join(params['parameters']))
+                         #print((self.ret).join([x for x,y in params['in']]))
+                        self.print(2,'''<tr><td>{acc}</td><td>{func}</td><td>{desc}</td><td>{param}</td><td>{i}</td><td>{o}</td><td>{r}</td><td>{rdesc}</td></tr>'''.format(acc=accessibility,func=func,desc=detailed,param=self.ret.join(params['parameters']),i=self.ret.join([ x for x,y in params['in']]),o=self.ret.join([x for x,y in params['out']]),r=returnType,rdesc=returnDoc))
+            self.print(2,'</table>')
+            self.print(2,'')
+        self.print(0,'</body>\n</html>')
+
         return
 
     def runMarkdown(self):

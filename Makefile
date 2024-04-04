@@ -15,7 +15,7 @@ doxygen-ver-check:
 
 testserver:
 	make doxygen-ver-check
-	cd test-server; touch plantuml.jar
+	cd test-server; rm -f plantuml.jar ; touch plantuml.jar
 	-cd test-server; doxygen
 	cd test-server/output/perlmod; rm -f mysetting.py sample-server.py
 	cd test-server/output/perlmod; ln -s ../../../src/mysetting.py mysetting.py
