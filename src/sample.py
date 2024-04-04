@@ -1,5 +1,7 @@
+import sys,os
+sys.path.append(os.getcwd())
+import mysetting
 import DoxyDocs
-import sys
 import argparse
 
 class DoxyDocsClass :
@@ -14,14 +16,27 @@ class DoxyDocsClass :
         self.outfile = outfile
         self.debug = debug
         self.of = None
+        self.html = False
         if self.outfile.strip():
             print('write:',self.outfile)
             self.of = open(self.outfile.strip(),'w')
+            if self.outfile.strip().endswith('.html'):
+                self.html = True
+
     def __fini__(self):
         if self.outfile.strip():
             close(self.of)
 
     def run(self):
+        if self.html:
+            self.runHtml()
+        else:
+            self.runMarkdown()
+
+    def runHtml(self):
+        return
+
+    def runMarkdown(self):
         self.print(0,'# classes')
         self.print(0,'| Class | Derived | Includes | Brief | Detailed Description|')
         self.print(0,'|-------|-------------|---------|---------|----|')
