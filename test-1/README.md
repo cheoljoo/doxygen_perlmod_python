@@ -1,26 +1,32 @@
-# doxygen_perlmod_python
-- developers want to use parsing data from doxygen.
-- they want to do something with python.
+# example
 
 ## Doxyfile
-- set **GENERATE_PERLMOD = YES**   and **PERLMOD_PYTHON = YES**
-- it gives more examples and usage when you set PERLMOD_PYTHON to YES in doxygen
+- GENERATE_PERLMOD = YES
+- PERLMOD_PYTHON = YES
+- INPUT =  ../doxygen-test-src
+- PLANTUML_JAR_PATH = ./plantuml.jar
 
-## make python_doc
+## make test1
+- check doxygen version whether supports PERLMOD_PYTHON
 - DoxyDocs.pm converts to DoxyDocs.py.
   - DoxyDocs.py is loaded in python program.
 - sample.py makes markdown (output.md) file as final output.
   - output.md includes table for classes and member functions.
-  - if doxygen comments include plantuml , output.md includes plantuml   if you set PLANTUML_JAR_PATH = ./plantuml.jar and this file exists.
 - output
-	- output.md : show markdown including plantuml with vscode (useful extension : markdown preview enhanced)
-
-## make code2cpp
-- add new file in input_perlmodgen_files directory
-    - add new line for new file in Makefile : `cd input_perlmodgen_files; ln -s ../[wanted_file] [wanted_file]`
-- all codes with related to PERLMOD_PYTHON are created by perlmodgen.cpp.
-- put2cpp.py insert converted c++ code into perlmodgen.cpp from files in input_perlmodgen_files directory.
-- `--perlmodgen` option : location of perlmodgen.cpp. python codes in inputdir will be updated.
-- generated code will be inserted between `// perlmodPython PerlModGenerator [key] <start>` and `// perlmodPython PerlModGenerator [key] <end>`
-- output    ( `--perlmodgen=../../../../src/perlmodgen.cpp` )
-	- ../../../../src/perlmodgen.cpp.mod : you can replace perlmodgen.cpp with it.
+  - output.md : show markdown including plantuml with vscode (useful extension : markdown preview enhanced)
+- If doxygen comments include plantuml , output.md includes plantuml   if you set PLANTUML_JAR_PATH = ./plantuml.jar and this file exists.
+  - I use `touch plantuml.jar` in Makefile. so it will have the follwoing error. but , it will make DoxyDocs.pm rapidly without generating png file.
+  - ```
+    Generating PlantUML png Files in html
+    Error: Invalid or corrupt jarfile ./plantuml.jar
+    /home/cheoljoo.lee/code/doxygen_perlmod_python/doxygen-test-src/dog.hpp:24: error: Problems running PlantUML. Verify that the command 'java -jar "./plantuml.jar" -h' works from the command line. Exit code: 1.
+    Generating PlantUML eps Files in latex
+    Error: Invalid or corrupt jarfile ./plantuml.jar
+    /home/cheoljoo.lee/code/doxygen_perlmod_python/doxygen-test-src/dog.hpp:24: error: Problems running PlantUML. Verify that the command 'java -jar "./plantuml.jar" -h' works from the command line. Exit code: 1.
+    epstopdf ($Id: epstopdf.pl 48681 2018-09-16 23:03:58Z karl $) 2.28
+    !!! Error: Cannot open /home/cheoljoo.lee/code/doxygen_perlmod_python/test-1/output/latex/inline_umlgraph_2.eps: No such file or directory
+    /home/cheoljoo.lee/code/doxygen_perlmod_python/doxygen-test-src/dog.hpp:24: error: Problems running epstopdf. Check your TeX installation! Exit code: 2.
+    epstopdf ($Id: epstopdf.pl 48681 2018-09-16 23:03:58Z karl $) 2.28
+    !!! Error: Cannot open /home/cheoljoo.lee/code/doxygen_perlmod_python/test-1/output/latex/inline_umlgraph_4.eps: No such file or directory
+    /home/cheoljoo.lee/code/doxygen_perlmod_python/doxygen-test-src/dog.hpp:24: error: Problems running epstopdf. Check your TeX installation! Exit code: 2.
+    ```

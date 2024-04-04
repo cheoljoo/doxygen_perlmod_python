@@ -2344,8 +2344,7 @@ PERLMOD_LATEX          = NO
 
 # If the PERLMOD_PYTHON tag is set to YES, doxygen will generate the necessary
 # Makefile rules, Python scripts and code to be able to generate print and
-# markdown output from the Perl module output. experiment is using mako python
-# library.
+# markdown output from the Perl module output.
 # The default value is: NO.
 # This tag requires that the tag GENERATE_PERLMOD is set to YES.
 
