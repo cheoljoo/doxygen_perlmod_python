@@ -17,6 +17,7 @@
     - but we do not copy proper plantuml.jar. we use 'touch plantuml.jar' to remove java running time.
 - output
 	- test-1/output/perlmod/output.md : show markdown including plantuml with vscode (useful extension : markdown preview enhanced)
+    - ![](img/markdown.png)
 - if you find some Error when you run doxygen , it is no problem.
   - show [link](test-1/README.md) to know the reason
 
@@ -33,6 +34,11 @@
   - INPUT =  ../doxygen-test-src
   - PLANTUML_JAR_PATH = ./plantuml.jar
     - but we do not copy proper plantuml.jar. we use 'touch plantuml.jar' to remove java running time.
+- output
+    - plantuml server is working.
+        - ![](img/plantuml-server.png)
+    - plantuml server is not working well.
+        - ![](img/no-plantuml-server.png)
 - if you find some Error when you run doxygen , it is no problem.
   - show [link](test-server/README.md) to know the reason
 - make alternative url in html : we can use png file when we have some error to connect to plantuml server
@@ -55,5 +61,10 @@
     - but we do not copy proper plantuml.jar. we use 'touch plantuml.jar' to remove java running time.
 - if you find some Error when you run doxygen , it is no problem.
   - show [link](test-mako/README.md) to know the reason
+- output : mako result is same as `make testserver`
+    - plantuml server is working.
+        - ![](img/plantuml-server.png)
+    - plantuml server is not working well.
+        - ![](img/no-plantuml-server.png)
 
 ## make plantuml with hpp2plantuml
