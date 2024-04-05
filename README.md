@@ -67,4 +67,3 @@
     - plantuml server is not working well.
         - ![](img/no-plantuml-server.png)
 
-## make plantuml with hpp2plantuml
