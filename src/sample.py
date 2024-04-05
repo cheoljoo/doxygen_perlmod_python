@@ -1,6 +1,5 @@
 import sys,os
 sys.path.append(os.getcwd())
-import mysetting
 import DoxyDocs
 import argparse
 import mysetting
@@ -218,7 +217,8 @@ class DoxyDocsClass :
                     f.write(p)
                     f.write('\n@enduml\n')
                 proxylink = '{proxy}&src={puml}/{file}'.format(proxy=mysetting.myPlantumlServerProxy , puml=mysetting.mySrcDirHttp , file='test-{c}.puml'.format(c=self.plantumlCnt))
-                self.print(2,'''<img src="{src}" alt="test-{c}.puml">'''.format(src=proxylink,c=self.plantumlCnt))
+                pnglink = './{file}'.format(proxy=mysetting.myPlantumlServerProxy , puml=mysetting.mySrcDirHttp , file='test-{c}.png'.format(c=self.plantumlCnt))
+                self.print(2,'''<img src="{src}" onerror="this.onerror=null;this.src='{png}';" alt="test-{c}.puml">'''.format(src=proxylink,png=pnglink,c=self.plantumlCnt))
 
             # Table
             self.print(2,'<table>')
@@ -405,6 +405,14 @@ class DoxyDocsClass :
             elif type in ['linebreak']:  # 'parbreak'
                 s += self.ret
         return s
+
+# not used yet
+def convertCharForHtml(s1):
+    s1 = s1.replace('&', '&amp;')
+    s1 = s1.replace('<', '&lt;')
+    s1 = s1.replace('>', '&gt;')
+    s1 = s1.replace('"', "&quot;")
+    return s1
 
 if (__name__ == "__main__"):
     parser = argparse.ArgumentParser(
