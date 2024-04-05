@@ -54,6 +54,6 @@
   - PLANTUML_JAR_PATH = ./plantuml.jar
     - but we do not copy proper plantuml.jar. we use 'touch plantuml.jar' to remove java running time.
 - if you find some Error when you run doxygen , it is no problem.
-  - show [link](test-server/README.md) to know the reason
+  - show [link](test-mako/README.md) to know the reason
 
 ## make plantuml with hpp2plantuml
