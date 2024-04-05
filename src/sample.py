@@ -30,8 +30,10 @@ class DoxyDocsClass :
     def run(self):
         if self.html:
             self.runHtml()
+            print('! output (html) is {f}'.format(f=os.getcwd()+'/'+self.outfile),file=sys.stderr)
         else:
             self.runMarkdown()
+            print('! output (markdown) is {f}'.format(f=os.getcwd()+'/'+self.outfile),file=sys.stderr)
 
     def runHtml(self):
         self.print(0,'<!DOCTYPE html>\n<html>')
@@ -217,7 +219,7 @@ class DoxyDocsClass :
                     f.write(p)
                     f.write('\n@enduml\n')
                 proxylink = '{proxy}&src={puml}/{file}'.format(proxy=mysetting.myPlantumlServerProxy , puml=mysetting.mySrcDirHttp , file='test-{c}.puml'.format(c=self.plantumlCnt))
-                pnglink = './{file}'.format(proxy=mysetting.myPlantumlServerProxy , puml=mysetting.mySrcDirHttp , file='test-{c}.png'.format(c=self.plantumlCnt))
+                pnglink = '../../../img/{file}'.format(proxy=mysetting.myPlantumlServerProxy , puml=mysetting.mySrcDirHttp , file='test-{c}.png'.format(c=self.plantumlCnt))
                 self.print(2,'''<img src="{src}" onerror="this.onerror=null;this.src='{png}';" alt="test-{c}.puml">'''.format(src=proxylink,png=pnglink,c=self.plantumlCnt))
 
             # Table

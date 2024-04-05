@@ -35,12 +35,25 @@
     - but we do not copy proper plantuml.jar. we use 'touch plantuml.jar' to remove java running time.
 - if you find some Error when you run doxygen , it is no problem.
   - show [link](test-server/README.md) to know the reason
-- todo
-  - make alternative url in html : we can use png file when we have some error to connect to plantuml server
-
-## make plantuml with hpp2plantuml
+- make alternative url in html : we can use png file when we have some error to connect to plantuml server
+  - ```
+    <img src="https://example.com/first-image.jpg"
+     onerror="this.onerror=null;this.src='https://example.com/second-image.jpg';"
+     alt="alternative text">
+    ```
 
 ## html with mako (python module)
-- sample-mako.py
+- pip3 install mako
+  - https://www.makotemplates.org/
+- `make testmako`
+- source : test-mako
+- Doxyfile
+  - GENERATE_PERLMOD = YES
+  - PERLMOD_PYTHON = YES
+  - INPUT =  ../doxygen-test-src
+  - PLANTUML_JAR_PATH = ./plantuml.jar
+    - but we do not copy proper plantuml.jar. we use 'touch plantuml.jar' to remove java running time.
+- if you find some Error when you run doxygen , it is no problem.
+  - show [link](test-server/README.md) to know the reason
 
-
+## make plantuml with hpp2plantuml

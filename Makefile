@@ -23,3 +23,14 @@ testserver:
 	cd test-server/output/perlmod; perl doxy2py.pl
 	cd test-server/output/perlmod; python3 sample-server.py --outfile=output.html
 
+testmako:
+	make doxygen-ver-check
+	cd test-mako; rm -f plantuml.jar ; touch plantuml.jar
+	-cd test-mako; doxygen
+	cd test-mako/output/perlmod; rm -f mysetting.py sample-mako.py class.mako
+	cd test-mako/output/perlmod; ln -s ../../../src/mysetting.py mysetting.py
+	cd test-mako/output/perlmod; ln -s ../../../src/sample-mako.py sample-mako.py
+	cd test-mako/output/perlmod; ln -s ../../../src/class.mako class.mako
+	cd test-mako/output/perlmod; perl doxy2py.pl
+	cd test-mako/output/perlmod; python3 sample-mako.py --infile=class.mako
+
