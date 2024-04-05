@@ -8,6 +8,7 @@ test1:
 	cd test-1/output/perlmod; rm -f mysetting.py sample-test.py
 	cd test-1/output/perlmod; ln -s ../../../src/mysetting.py mysetting.py
 	cd test-1/output/perlmod; ln -s ../../../src/sample.py sample-test.py
+	cd test-1/output/perlmod; perl doxy2py.pl
 	cd test-1/output/perlmod; python3 sample-test.py --outfile=output.md
 
 doxygen-ver-check:
