@@ -3,15 +3,13 @@
 - they want to do something with python.
 
 ## Doxyfile
-- set **GENERATE_PERLMOD = YES**   and **PERLMOD_PYTHON = YES**
-- it gives more examples and usage when you set PERLMOD_PYTHON to YES in Doxyfile
+- set **GENERATE_PERLMOD = YES**
 
 ## markdown output with plantuml
 - `make test1`
 - source : test-1
 - Doxyfile
   - GENERATE_PERLMOD = YES
-  - PERLMOD_PYTHON = YES
   - INPUT =  ../doxygen-test-src
   - PLANTUML_JAR_PATH = ./plantuml.jar
     - but we do not copy proper plantuml.jar. we use 'touch plantuml.jar' to remove java running time.
@@ -30,7 +28,6 @@
 - source : test-server
 - Doxyfile
   - GENERATE_PERLMOD = YES
-  - PERLMOD_PYTHON = YES
   - INPUT =  ../doxygen-test-src
   - PLANTUML_JAR_PATH = ./plantuml.jar
     - but we do not copy proper plantuml.jar. we use 'touch plantuml.jar' to remove java running time.
@@ -55,7 +52,6 @@
 - source : test-mako
 - Doxyfile
   - GENERATE_PERLMOD = YES
-  - PERLMOD_PYTHON = YES
   - INPUT =  ../doxygen-test-src
   - PLANTUML_JAR_PATH = ./plantuml.jar
     - but we do not copy proper plantuml.jar. we use 'touch plantuml.jar' to remove java running time.

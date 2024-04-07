@@ -2,7 +2,6 @@
 
 ## Doxyfile
 - GENERATE_PERLMOD = YES
-- PERLMOD_PYTHON = YES
 - INPUT =  ../doxygen-test-src
 - PLANTUML_JAR_PATH = ./plantuml.jar
 
@@ -13,7 +12,6 @@
 - pip3 install mako
 
 ## make testmako
-- check doxygen version whether supports PERLMOD_PYTHON
 - DoxyDocs.pm converts to DoxyDocs.py.
   - DoxyDocs.py is loaded in python program.
 - input : class.mako

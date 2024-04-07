@@ -2,12 +2,10 @@
 
 ## Doxyfile
 - GENERATE_PERLMOD = YES
-- PERLMOD_PYTHON = YES
 - INPUT =  ../doxygen-test-src
 - PLANTUML_JAR_PATH = ./plantuml.jar
 
 ## make test1
-- check doxygen version whether supports PERLMOD_PYTHON
 - DoxyDocs.pm converts to DoxyDocs.py.
   - DoxyDocs.py is loaded in python program.
 - sample.py makes markdown (output.md) file as final output.
