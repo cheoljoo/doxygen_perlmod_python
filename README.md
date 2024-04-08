@@ -1,5 +1,6 @@
 # doxygen_perlmod_python
-- developers want to use parsing data from doxygen.
+- developers want to use parsed data from doxygen.
+  - it supports DoxyDocs.py for python. it is similar to DoxyDocs.pm for perl
 - they want to do something with python.
 
 ## Doxyfile
