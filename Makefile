@@ -2,6 +2,7 @@ all:
 	make test1
 
 test1:
+	cd src; if [ ! -e mysetting.py ]; then cp -f mysetting_example.py mysetting.py; echo "===========.py"; echo "!! edit mysetting.py"; exit 4;  fi
 	cd test-1; touch plantuml.jar
 	-cd test-1; doxygen
 	cd test-1/output/perlmod; rm -f mysetting.py sample-test.py doxy2py.pl
@@ -12,6 +13,7 @@ test1:
 	cd test-1/output/perlmod; python3 sample-test.py --outfile=output.md
 
 testserver:
+	cd src; if [ ! -e mysetting.py ]; then cp -f mysetting_example.py mysetting.py; echo "===========.py"; echo "!! edit mysetting.py"; exit 4;  fi
 	cd test-server; rm -f plantuml.jar ; touch plantuml.jar
 	-cd test-server; doxygen
 	cd test-server/output/perlmod; rm -f mysetting.py sample-server.py doxy2py.pl
@@ -22,6 +24,7 @@ testserver:
 	cd test-server/output/perlmod; python3 sample-server.py --outfile=output.html
 
 testmako:
+	cd src; if [ ! -e mysetting.py ]; then cp -f mysetting_example.py mysetting.py; echo "===========.py"; echo "!! edit mysetting.py"; exit 4;  fi
 	cd test-mako; rm -f plantuml.jar ; touch plantuml.jar
 	-cd test-mako; doxygen
 	cd test-mako/output/perlmod; rm -f mysetting.py sample-mako.py class.mako doxy2py.pl
@@ -32,3 +35,8 @@ testmako:
 	cd test-mako/output/perlmod; perl doxy2py.pl
 	cd test-mako/output/perlmod; python3 sample-mako.py --infile=class.mako
 
+re:
+	cd src; if [ ! -e mysetting.py ]; then cp -f mysetting_example.py mysetting.py; echo "===========.py"; echo "!! edit mysetting.py"; exit 4;  fi
+	cd region; ln -s ../src/mysetting.py mysetting.py
+	cd region; perl doxy2py.pl
+	cd region; python3 sample-server.py --outfile=output.html

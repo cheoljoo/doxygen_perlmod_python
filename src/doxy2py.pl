@@ -7,6 +7,7 @@ our %init4py;
 sub change_special_code {
 	my ($s) = @_;
 	$s =~ s/\'/\\\'/g;
+	$s =~ s/\\/\\\\/g;
 	return $s;
 }
 

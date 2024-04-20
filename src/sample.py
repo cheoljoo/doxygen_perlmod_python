@@ -1,5 +1,5 @@
 import sys,os
-sys.path.append(os.getcwd())
+sys.path.insert(0,os.getcwd())
 import DoxyDocs
 import argparse
 import mysetting
@@ -216,11 +216,14 @@ class DoxyDocsClass :
                 self.plantumlCnt += 1
                 with open('test-{c}.puml'.format(c=self.plantumlCnt),'w') as f:
                     f.write('@startuml test-{c}.png\n'.format(c=self.plantumlCnt))
+                    p = p.replace('\\n','\\r')
                     f.write(p)
                     f.write('\n@enduml\n')
                 proxylink = '{proxy}&src={puml}/{file}'.format(proxy=mysetting.myPlantumlServerProxy , puml=mysetting.mySrcDirHttp , file='test-{c}.puml'.format(c=self.plantumlCnt))
                 pnglink = '../../../img/{file}'.format(proxy=mysetting.myPlantumlServerProxy , puml=mysetting.mySrcDirHttp , file='test-{c}.png'.format(c=self.plantumlCnt))
                 self.print(2,'''<img src="{src}" onerror="this.onerror=null;this.src='{png}';" alt="test-{c}.puml">'''.format(src=proxylink,png=pnglink,c=self.plantumlCnt))
+                 #print('''<img src="{src}" onerror="this.onerror=null;this.src='{png}';" alt="test-{c}.puml">'''.format(src=proxylink,png=pnglink,c=self.plantumlCnt))
+                 #print(mysetting.myPlantumlServerProxy,mysetting.mySrcDirHttp)
 
             # Table
             self.print(2,'<table>')
