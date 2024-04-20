@@ -36,7 +36,4 @@ testmako:
 	cd test-mako/output/perlmod; python3 sample-mako.py --infile=class.mako
 
 re:
-	cd src; if [ ! -e mysetting.py ]; then cp -f mysetting_example.py mysetting.py; echo "===========.py"; echo "!! edit mysetting.py"; exit 4;  fi
-	cd region; ln -s ../src/mysetting.py mysetting.py
-	cd region; perl doxy2py.pl
-	cd region; python3 sample-server.py --outfile=output.html
+	make -C region
