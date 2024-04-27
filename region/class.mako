@@ -1,7 +1,21 @@
 <%!
 import os
-# D = DoxyDocs.D  in DoxyDocs.py
+import json
 ret = '<br>'
+
+def getProxyPlantuml(pfile,D):
+    html = ''
+    if os.path.exists(pfile):
+        proxylink = '{proxy}&src={phttp}/{file}'.format(proxy=D['_template__']['myPlantumlServerProxy'] , phttp=D['_template__']['mySrcDirHttp'] , file=pfile)
+        html += '''<img src="{proxylink}" alt="{pfile}")><br>'''.format(proxylink=proxylink,pfile=pfile)
+        D['_template__']['files'].append(pfile)
+         #print('html',html, 'pfile',pfile)
+    return html
+
+def saveFiles(d):
+    with open('_save-files.json','w') as jsonf:
+        json.dump(d['_template__'],jsonf,indent = 4)
+    return 
 
 def getParameters(parameters,detailed_doc):
     """ parameters
@@ -271,12 +285,13 @@ def getDescription(doc):
 </head>
 
 <body>
-<h1>${ D['service'] }</h1>
-<h3>class diagram</h3>
-<% proxylink = '{proxy}&src={puml}/{file}'.format(proxy=myPlantumlServerProxy , puml=mySrcDirHttp , file='_plantuml/_all_puml_nomember_exception_inherit_unknown.puml') %>\
-<img src="${proxylink}" alt="_plantuml/_all_puml_nomember_exception_inherit_unknown.puml" width="2048">
-<% proxylink = '{proxy}&src={puml}/{file}'.format(proxy=myPlantumlServerProxy , puml=mySrcDirHttp , file='_plantuml/_all_puml.puml') %>\
-<img src="${proxylink}" alt="_plantuml/_all_puml.puml">
+<h1>${ D['_template__']['service'] }</h1>
+<h2>- class diagram (brief)</h2>
+<% html = getProxyPlantuml('_plantuml/_all_puml_nomember_exception_inherit_unknown.puml',D) %>
+${ html }
+<h2>- class diagram (full)</h2>
+${ getProxyPlantuml('_plantuml/_all_puml.puml',D) }
+<h2>- class list</h2>
 <table>
     <tr><th>Class</th><th>inherit</th><th>Includes</th><th>Brief</th><th>Detailed Description</th></tr>
 % for k,v in D['classes'].items():
@@ -303,9 +318,7 @@ def getDescription(doc):
         % if os.path.exists('_plantuml/{c}_puml.puml'.format(c=v['name'])):
             <% classSubCntL2 += 1 %>
             <h2>${classCnt}.${classSubCntL2}. class diagram</h2>    
-            <% proxylink = '{proxy}&src={puml}/{file}'.format(proxy=myPlantumlServerProxy , puml=mySrcDirHttp , file='_plantuml/{c}_puml.puml'.format(c=v['name'])) %>\
-            <img src="${proxylink}" alt="_plantuml/${v['name']}.puml")>
-            <br>
+            ${ getProxyPlantuml('_plantuml/{c}_puml.puml'.format(c=v['name']),D) }
         % endif
 
         <% classSubCntL2 += 1 %>
@@ -353,10 +366,8 @@ def getDescription(doc):
                     f.write('@startuml test-{c}.png\n'.format(c=plantumlCnt))
                     f.write(detailsContent)
                     f.write('\n@enduml\n')
-                    proxylink = '{proxy}&src={puml}/{file}'.format(proxy=myPlantumlServerProxy , puml=mySrcDirHttp , file='test-{c}.puml'.format(c=plantumlCnt))
-                    pnglink = '../../../img/{file}'.format(proxy=myPlantumlServerProxy , puml=mySrcDirHttp , file='test-{c}.png'.format(c=plantumlCnt))
                 %>
-                <img src="${proxylink}" onerror="this.onerror=null;this.src='${pnglink}';" alt="test-${plantumlCnt}.puml"><br>
+                ${ getProxyPlantuml("test-{c}.puml".format(c=plantumlCnt),D) }
             % else:
                 ${ detailsContent } <br>
             % endif
@@ -410,10 +421,8 @@ def getDescription(doc):
                                     f.write('@startuml test-{c}.png\n'.format(c=plantumlCnt))
                                     f.write(detailsContent)
                                     f.write('\n@enduml\n')
-                                    proxylink = '{proxy}&src={puml}/{file}'.format(proxy=myPlantumlServerProxy , puml=mySrcDirHttp , file='test-{c}.puml'.format(c=plantumlCnt))
-                                    pnglink = '../../../img/{file}'.format(proxy=myPlantumlServerProxy , puml=mySrcDirHttp , file='test-{c}.png'.format(c=plantumlCnt))
                                 %>
-                                <img src="${proxylink}" onerror="this.onerror=null;this.src='${pnglink}';" alt="test-${plantumlCnt}.puml"><br>
+                                ${ getProxyPlantuml("test-{c}.puml".format(c=plantumlCnt),D) }
                             % else:
                                 ${ detailsContent } <br>
                             % endif
@@ -428,3 +437,5 @@ def getDescription(doc):
 
 </body>
 </html>
+
+${ saveFiles(D) }
