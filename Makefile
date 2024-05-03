@@ -35,5 +35,8 @@ testmako:
 	cd test-mako/output/perlmod; perl doxy2py.pl
 	cd test-mako/output/perlmod; python3 sample-mako.py --infile=class.mako
 
-re:
+region:
 	make -C region
+
+tcmd_:
+	make -C tcmd all INDIR=../region/hpp OUTDIR=./module/regionService FILE_HTTP_URL="http://tiger02.lge.com/cheoljoo.lee/code/doxygen_perlmod_python/tcmd" 
