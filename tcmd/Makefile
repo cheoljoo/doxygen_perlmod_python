@@ -1,6 +1,5 @@
-SRC_DIR := ${INDIR}
 DEST_DIR := "_hpp_"
-FILES := $(shell find $(SRC_DIR) -name "*.h" -o -name "*.hpp")
+FILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp")
 FILE_HTTP := "http://tiger02.lge.com/cheoljoo.lee/code/doxygen_perlmod_python/tcmd"
 
 all:
@@ -41,7 +40,7 @@ endif
 	 #copy from ${INDIR} to ${OUTDIR}/md/module/basename/class.mako.html
 	 #copy doxygen _output_ (DoxyDocs.pm)  to ${OUTDIR}/md/module/basename
 	 # do run the following things
-	python3 hpp2plantuml.py $(shell find ${DEST_DIR} -maxdepth 1 \( -name "*.h" -o -name "*.hpp" \) -print0 | xargs -0 -n 1 echo -i) -o all.puml -j out.json
+	python3 hpp2plantuml.py $(shell find ${INDIR} \( -name "*.h" -o -name "*.hpp" \) -print0 | xargs -0 -n 1 echo -i) -o all.puml -j out.json
 	# if we use -j option in hpp2plantuml  , parse_hpp2plantuml.py is useless.
 	#python3 parse_hpp2plantuml.py --inpuml=all.puml --outjson=parse-out.json
 	python3 sample-mako.py --infile=class.mako --service="Region Service"  --plantumlServerProxy="http://tiger02.lge.com:18080/proxy?fmt=svg"  --fileHttpUrl=${FILE_HTTP} --tcmdoutdir=${OUTDIR}

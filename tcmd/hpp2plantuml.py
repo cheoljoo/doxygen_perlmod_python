@@ -1110,7 +1110,7 @@ class Diagram(object):
             for obj in container_iterator(objects):
                 # Parse container
                 obj_c = container_handler(obj)
-                obj_c._filename = header_file
+                obj_c._filename = header_file.split('/')[-1]
                 self._objects.append(obj_c)
                 # Look for nested enums
                 # Find value from iterator (may be a tuple)
@@ -1121,7 +1121,7 @@ class Diagram(object):
                 if 'enums' in obj_n:
                     for m in MEMBER_PROP_MAP.keys():
                         for enum in obj_n['enums'][m]:
-                            enum_c = Enum(enum, filename=header_file,parent=obj_c.name)
+                            enum_c = Enum(enum, filename=header_file.split('/')[-1],parent=obj_c.name)
                             # Adjust name to reflect nesting
                             enum_c._name = obj_c.name + '::' + enum_c._name
                             self._objects.append(enum_c)
