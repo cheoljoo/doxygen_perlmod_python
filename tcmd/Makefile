@@ -22,6 +22,7 @@ ifdef FILE_HTTP_URL
 	$(eval FILE_HTTP = ${FILE_HTTP_URL})
 endif
 	@echo "FILE_HTTP = ${FILE_HTTP}"
+	@echo "MODULE = ${MODULE}"
 	@echo "FILES = ${FILES}"
 	if [ ! -e mysetting.py ]; then cp -f ../src/mysetting_example.py mysetting.py; fi
 	 #git clone https://github.com/cheoljoo/doxygen_perlmod_python.git ${GITDIR}
