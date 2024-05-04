@@ -39,4 +39,4 @@ region:
 	make -C region
 
 tcmd_:
-	make -C tcmd all INDIR=../region/hpp OUTDIR=./module/regionService FILE_HTTP_URL="http://tiger02.lge.com/cheoljoo.lee/code/doxygen_perlmod_python/tcmd" 
+	make -C tcmd all INDIR=../region/hpp OUTDIR=./module/regionService FILE_HTTP_URL="http://tiger02.lge.com/cheoljoo.lee/code/doxygen_perlmod_python/tcmd" MODULE="Region"
