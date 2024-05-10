@@ -1,15 +1,19 @@
 <%!
 import os
 import json
+
 ret = '<br>'
+pumlFileCount = 1
 
 def getProxyPlantuml(pfile,D):
+    global pumlFileCount
     html = ''
     if os.path.exists(pfile):
         proxylink = '{proxy}&src={phttp}/{file}'.format(proxy=D['_template__']['myPlantumlServerProxy'] , phttp=D['_template__']['mySrcDirHttp']+'/'+D['_template__']['tcmdoutdir'] if D['_template__']['tcmdoutdir'] else D['_template__']['mySrcDirHttp'], file=pfile.split('/')[-1])
-        html += '''<img src="{proxylink}" alt="{pfile}")><br>'''.format(proxylink=proxylink,pfile=pfile)
+        html += '''<img id="Image{c}" src="" alt="{pfile}")><br>'''.format(c=pumlFileCount,proxylink=proxylink,pfile=pfile)
         D['_template__']['files'].append(pfile)
          #print('html',html, 'pfile',pfile)
+        pumlFileCount += 1
     return html
 
 def getParameters(parameters,detailed_doc):
@@ -429,6 +433,24 @@ ${ getProxyPlantuml('_plantuml/_all_puml.puml',D) }
     % endif
 
 % endfor
+
+<script>
+window.onload = function() {
+    var aa = ${ D['_template__']['files'] } ;
+
+    for (var count = 1; count < ${ pumlFileCount }; count++) {
+        var img = document.getElementById("Image" + count);
+        var currentUrl = window.location.href;
+        var lastpuml = aa[count].split("/");
+        var urlSegments = currentUrl.split("/");
+        urlSegments[urlSegments.length - 1]= lastpuml[lastpuml.length - 1];
+        var newSrc = urlSegments.join("/");
+        var newSrc2 = "http://tiger02.lge.com:18080/proxy?fmt=svg&src=" + newSrc;
+        img.src = newSrc2;
+        //img.src = aa[count]; // Array는 0부터 시작하므로, count에서 1을 빼줍니다.
+    }
+}
+</script>
 
 </body>
 </html>
