@@ -43,7 +43,7 @@ class DoxyDocsClass :
         self.D['_template__']['tcmdoutdir'] = self.tcmdoutdir
         with open(self.outfile, mode='wb') as f:
             f.write(template.render(D=self.D))
-            print('! output (html) using mako is {f}'.format(f=os.getcwd()+'/'+self.outfile),file=sys.stderr)
+            print('! output (html) using mako is {f}'.format(f=os.getcwd()+'/'+self.D['_template__']['tcmdoutdir']+'/'+self.outfile),file=sys.stderr)
             print('! http (html) using mako is {f}'.format(f=self.D['_template__']['mySrcDirHttp']+'/'+self.D['_template__']['tcmdoutdir']+'/'+self.outfile),file=sys.stderr)
         with open('_save-files.json','w') as jsonf:
             json.dump(self.D['_template__'],jsonf,indent = 4)
