@@ -41,7 +41,7 @@ endif
 	echo "DoxyDocs.pm is used for this document"
 	cp -f _output_/perlmod/DoxyDocs.pm .
 	perl doxy2py.pl
-	bash taf_create_docker.sh
+	/bin/bash taf_create_docker.sh
 	mkdir -p ${OUTDIR}
 	if [ -e plantuml.md ]; then cp -f plantuml.md ${OUTDIR}; fi
 	docker run -it  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`:/docker_git -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE=${MODULE} doxygen_perlmod_python:latest  bash /docker_git/taf_run_in_docker.sh
