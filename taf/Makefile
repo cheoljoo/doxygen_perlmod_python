@@ -1,7 +1,11 @@
 DEST_DIR := "_hpp_"
-FILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
+SERFILES := $(shell find $(INDIR)/service -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
+INCFILES := $(shell find $(INDIR)/include -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
+INTFILES := $(shell find $(INDIR)/interface -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
 ALL_DIR := "_all_"
-ALLFILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
+SERALLFILES := $(shell find $(INDIR)/service -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
+INCALLFILES := $(shell find $(INDIR)/include -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
+INTALLFILES := $(shell find $(INDIR)/interface -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
 # 절대 경로 변환
 
 all:
@@ -42,10 +46,10 @@ endif
 	if [ -e plantuml.md ]; then cp -f plantuml.md ${OUTDIR}; fi
 	docker run -it  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`:/docker_git -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE=${MODULE} doxygen_perlmod_python:latest  bash /docker_git/taf_run_in_docker.sh
 
-copy: $(FILES)
+copy: $(SERFILES) $(INCFILES) $(INTFILES)
 	@mkdir -p $(DEST_DIR)
 	cp  $^ $(DEST_DIR)
 
-copyall: $(ALLFILES)
+copyall: $(SERALLFILES) $(INCALLFILES) $(INTALLFILES)
 	@mkdir -p $(ALL_DIR)
 	cp  $^ $(ALL_DIR)
