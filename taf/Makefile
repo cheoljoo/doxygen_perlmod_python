@@ -1,11 +1,7 @@
 DEST_DIR := "_hpp_"
-#SERFILES := $(shell find $(INDIR)/service -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
-INCFILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
-#-INTFILES := $(shell find $(INDIR)/interface -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
+SERFILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
 ALL_DIR := "_all_"
-#SERALLFILES := $(shell find $(INDIR)/service -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
-#INCALLFILES := $(shell find $(INDIR)/include -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
-#INTALLFILES := $(shell find $(INDIR)/interface -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
+SERALLFILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
 # 절대 경로 변환
 
 all:
@@ -27,13 +23,13 @@ endif
 	@echo "MODULE = ${MODULE}"
 	@echo "FILES = ${FILES}"
 	if [ ! -e mysetting.py ]; then cp -f ../src/mysetting_example.py mysetting.py; fi
-	 #git clone https://github.com/cheoljoo/doxygen_perlmod_python.git ${GITDIR}
-	 #mkdir -p ${OUTDIR}/hpp
-	 #find ${INDIR} \( -name "*.h" -o -name "*.hpp" \) -exec cp -f {} ${OUTDIR}/hpp \;
-	 #rm -rf _hpp_ plantuml.md
-	 #mkdir -p _all_
-	 #make copyall
-	 #-doxygen_flowchart Doxyfile.flowchart > dfc.log
+	git clone https://github.com/cheoljoo/doxygen_perlmod_python.git ${GITDIR}
+	mkdir -p ${OUTDIR}/hpp
+	find ${INDIR} \( -name "*.h" -o -name "*.hpp" \) -exec cp -f {} ${OUTDIR}/hpp \;
+	rm -rf _hpp_ plantuml.md
+	mkdir -p _all_
+	make copyall
+	-doxygen_flowchart Doxyfile.flowchart > dfc.log
 	rm -rf _hpp_ _output_ _plantuml DoxyDocs.pm DoxyDocs.py
 	mkdir -p _hpp_
 	make copy
@@ -49,10 +45,10 @@ endif
 	 #if [ -e plantuml.md ]; then cp -f plantuml.md ${OUTDIR}; fi
 	 #docker run -it  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`:/docker_git -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE=${MODULE} doxygen_perlmod_python:latest  bash /docker_git/taf_run_in_docker.sh  >> a.log
 
-copy: $(INCFILES)
+copy: $(SERFILES)
 	@mkdir -p $(DEST_DIR)
 	cp  $^ $(DEST_DIR)
 
-copyall: $(SERALLFILES) $(INCALLFILES) $(INTALLFILES)
+copyall: $(SERALLFILES)
 	@mkdir -p $(ALL_DIR)
 	cp  $^ $(ALL_DIR)
