@@ -25,7 +25,6 @@ endif
 	@echo "MODULE = ${MODULE}"
 	@echo "FILES = ${FILES}"
 	if [ ! -e mysetting.py ]; then cp -f ../src/mysetting_example.py mysetting.py; fi
-	 #git clone https://github.com/cheoljoo/doxygen_perlmod_python.git ${GITDIR}
 	 #mkdir -p ${OUTDIR}/hpp
 	 #find ${INDIR} \( -name "*.h" -o -name "*.hpp" \) -exec cp -f {} ${OUTDIR}/hpp \;
 	rm -rf _hpp_ _output_ _plantuml

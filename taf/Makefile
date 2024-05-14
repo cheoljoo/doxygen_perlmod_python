@@ -1,15 +1,5 @@
-DEST_DIR := "_hpp_"
-SERFILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
-ALL_DIR := "_all_"
-SERALLFILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
-# 절대 경로 변환
 
 all:
-#ifndef GITDIR
-#@echo "error: GITDIR is not defined"
-#exit 4
-#endif
-#@echo "GITDIR = ${GITDIR}"
 ifndef INDIR
 	@echo "error: INDIR is not defined"
 	exit 4
@@ -22,18 +12,14 @@ endif
 	@echo "OUTDIR = ${OUTDIR}"
 	@echo "MODULE = ${MODULE}"
 	@echo "FILES = ${FILES}"
+	rm -rf _hpp_  _all_
+	python3 copyFile.py --inDir=${INDIR} --startDirname="service,include,interface" --endExt="hpp,hxx,h" --destDir="_hpp_"
+	python3 copyFile.py --inDir=${INDIR} --startDirname="service,include,interface" --endExt="hpp,hxx,h,c,cpp,cxx" --destDir="_all_"
 	if [ ! -e mysetting.py ]; then cp -f ../src/mysetting_example.py mysetting.py; fi
-	git clone https://github.com/cheoljoo/doxygen_perlmod_python.git ${GITDIR}
-	mkdir -p ${OUTDIR}/hpp
-	find ${INDIR} \( -name "*.h" -o -name "*.hpp" \) -exec cp -f {} ${OUTDIR}/hpp \;
-	rm -rf _hpp_ plantuml.md
-	mkdir -p _all_
-	make copyall
-	-doxygen_flowchart Doxyfile.flowchart > dfc.log
-	rm -rf _hpp_ _output_ _plantuml DoxyDocs.pm DoxyDocs.py
-	mkdir -p _hpp_
-	make copy
-	doxygen
+	rm -rf plantuml.md
+	-doxygen_flowchart Doxyfile.flowchart > dfc.log    # _all_
+	rm -rf _output_ _plantuml DoxyDocs.pm DoxyDocs.py
+	doxygen         # _hpp_
 	echo "DoxyDocs.pm is used for this document" > a.log
 	cp -f _output_/perlmod/DoxyDocs.pm .  >> a.log
 	echo "doxy2py.pl"  >> a.log
@@ -44,11 +30,3 @@ endif
 	mkdir -p ${OUTDIR}  >> a.log
 	if [ -e plantuml.md ]; then cp -f plantuml.md ${OUTDIR}; fi
 	docker run -it  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`:/docker_git -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE=${MODULE} doxygen_perlmod_python:latest  bash /docker_git/taf_run_in_docker.sh  >> a.log
-
-copy: $(SERFILES)
-	@mkdir -p $(DEST_DIR)
-	cp  $^ $(DEST_DIR)
-
-copyall: $(SERALLFILES)
-	@mkdir -p $(ALL_DIR)
-	cp  $^ $(ALL_DIR)
