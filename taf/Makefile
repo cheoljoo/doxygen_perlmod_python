@@ -24,7 +24,9 @@ endif
 	 #git clone https://github.com/cheoljoo/doxygen_perlmod_python.git ${GITDIR}
 	 #mkdir -p ${OUTDIR}/hpp
 	 #find ${INDIR} \( -name "*.h" -o -name "*.hpp" \) -exec cp -f {} ${OUTDIR}/hpp \;
-	rm -rf plantuml.md
+	rm -rf _hpp_ plantuml.md
+	mkdir -p _hpp_
+	make copy
 	-doxygen_flowchart > dfc.log
 	rm -rf _hpp_ _output_ _plantuml DoxyDocs.pm DoxyDocs.py
 	mkdir -p _hpp_
@@ -35,7 +37,7 @@ endif
 	perl doxy2py.pl
 	bash taf_create_docker.sh
 	mkdir -p ${OUTDIR}
-	cp -f plantuml.md ${OUTDIR}
+	if [ -e plantuml.md ]; then cp -f plantuml.md ${OUTDIR}; fi
 	docker run -it  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`:/docker_git -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE=${MODULE} doxygen_perlmod_python:latest  bash /docker_git/taf_run_in_docker.sh
 
 copy: $(FILES)
