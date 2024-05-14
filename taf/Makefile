@@ -42,6 +42,7 @@ endif
 	cp -f _output_/perlmod/DoxyDocs.pm .
 	echo "doxy2py.pl"
 	perl doxy2py.pl
+	exit 0
 	echo "taf_create_docker.sh"
 	/bin/bash taf_create_docker.sh
 	echo "mkdir -p ${OUTDIR}"
