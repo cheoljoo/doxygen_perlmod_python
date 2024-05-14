@@ -1,5 +1,7 @@
 DEST_DIR := "_hpp_"
-FILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp")
+FILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
+ALL_DIR := "_all_"
+ALLFILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
 # 절대 경로 변환
 
 all:
@@ -25,9 +27,9 @@ endif
 	 #mkdir -p ${OUTDIR}/hpp
 	 #find ${INDIR} \( -name "*.h" -o -name "*.hpp" \) -exec cp -f {} ${OUTDIR}/hpp \;
 	rm -rf _hpp_ plantuml.md
-	mkdir -p _hpp_
-	make copy
-	-doxygen_flowchart > dfc.log
+	mkdir -p _all_
+	make copyall
+	-doxygen_flowchart Doxyfile.flowchart > dfc.log
 	rm -rf _hpp_ _output_ _plantuml DoxyDocs.pm DoxyDocs.py
 	mkdir -p _hpp_
 	make copy
@@ -44,3 +46,6 @@ copy: $(FILES)
 	@mkdir -p $(DEST_DIR)
 	cp  $^ $(DEST_DIR)
 
+copyall: $(ALLFILES)
+	@mkdir -p $(ALL_DIR)
+	cp  $^ $(ALL_DIR)
