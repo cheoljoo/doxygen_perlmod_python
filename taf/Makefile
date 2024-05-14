@@ -1,7 +1,7 @@
 DEST_DIR := "_hpp_"
 #SERFILES := $(shell find $(INDIR)/service -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
 INCFILES := $(shell find $(INDIR) -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
--INTFILES := $(shell find $(INDIR)/interface -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
+#-INTFILES := $(shell find $(INDIR)/interface -name "*.h" -o -name "*.hpp" -o -name "*.hxx")
 ALL_DIR := "_all_"
 #SERALLFILES := $(shell find $(INDIR)/service -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
 #INCALLFILES := $(shell find $(INDIR)/include -name "*.h" -o -name "*.hpp" -o -name "*.hxx" -o -name "*.c" -o -name "*.cpp" -o -name "*.cxx")
