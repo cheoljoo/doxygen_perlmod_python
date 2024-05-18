@@ -11,22 +11,24 @@ ifndef OUTDIR
 endif
 	@echo "OUTDIR = ${OUTDIR}"
 	@echo "MODULE = ${MODULE}"
-	@echo "FILES = ${FILES}"
 	rm -rf _hpp_  _all_
-	python3 copyFile.py --inDir=${INDIR} --startDirname="service,include,interface" --endExt="hpp,hxx,h" --destDir="_hpp_"
-	python3 copyFile.py --inDir=${INDIR} --startDirname="service,include,interface" --endExt="hpp,hxx,h,c,cpp,cxx" --destDir="_all_"
+	python3 copyFile.py --inDir=${INDIR} --startDirname="service,include,interface" --endExt="hpp,hxx,h" --destDir="_hpp_"  > doxygen_perlmod_python.log  2>&1 
+	python3 copyFile.py --inDir=${INDIR} --startDirname="service,include,interface" --endExt="hpp,hxx,h,c,cpp,cxx" --destDir="_all_"  >> doxygen_perlmod_python.log  2>&1 
 	if [ ! -e mysetting.py ]; then cp -f ../src/mysetting_example.py mysetting.py; fi
 	rm -rf plantuml.md
-	-doxygen_flowchart Doxyfile.flowchart > dfc.log    # _all_
+	echo "doxgen_flowchart"
+	-doxygen_flowchart Doxyfile.flowchart > /dev/null  2>&1   # _all_
 	rm -rf _output_ _plantuml DoxyDocs.pm DoxyDocs.py
-	doxygen         # _hpp_
-	echo "DoxyDocs.pm is used for this document" > a.log
-	cp -f _output_/perlmod/DoxyDocs.pm .  >> a.log
-	echo "doxy2py.pl"  >> a.log
-	perl doxy2py.pl  >> a.log
-	echo "taf_create_docker.sh"  >> a.log
-	/bin/bash taf_create_docker.sh  >> a.log
-	echo "mkdir -p ${OUTDIR}"  >> a.log
-	mkdir -p ${OUTDIR}  >> a.log
-	docker run -it  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`:/docker_git -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE=${MODULE} doxygen_perlmod_python:latest  bash /docker_git/taf_run_in_docker.sh  >> a.log
-	if [ -e plantuml.md ]; then echo "copy plantuml.md"; cp -f plantuml.md ${OUTDIR} ; fi
+	echo "doxgen"
+	doxygen  >> doxygen_perlmod_python.log  2>&1        # _hpp_
+	echo "DoxyDocs.pm is used for this document" 
+	cp -f _output_/perlmod/DoxyDocs.pm . 
+	echo "doxy2py.pl" 
+	perl doxy2py.pl  >> doxygen_perlmod_python.log 2>&1
+	echo "taf_create_docker.sh"
+	/bin/bash taf_create_docker.sh  >> doxygen_perlmod_python.log 2>&1
+	echo "mkdir -p ${OUTDIR}" 
+	mkdir -p ${OUTDIR}
+	docker run -it  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`:/docker_git -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE=${MODULE} doxygen_perlmod_python:latest  bash /docker_git/taf_run_in_docker.sh  >> doxygen_perlmod_python.log 2>&1
+	if [ -e plantuml.md ]; then echo "copy plantuml.md ${OUTDIR}"; cp -f plantuml.md ${OUTDIR} ; fi
+	if [ -e doxygen_perlmod_python.log ]; then echo "copy doxygen_perlmod_python.log ${OUTDIR}"; cp -f doxygen_perlmod_python.log ${OUTDIR} ; fi
