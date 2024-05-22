@@ -101,5 +101,6 @@ if (__name__ == "__main__"):
         help='output directory for tcmd to gather serviced files')
     args = parser.parse_args()
 
+    print('====start',sys.argv[0])
     ddc = DoxyDocsClass(doxydocs=DoxyDocs.D,infile=args.infile,outfile=args.outfile,debug=args.debug,service=args.service,plantumlServerProxy=args.plantumlServerProxy,tcmdoutdir=args.tcmdoutdir)
     ddc.run()

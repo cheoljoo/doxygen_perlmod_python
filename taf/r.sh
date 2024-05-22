@@ -1,0 +1,1 @@
+docker run -it  --rm -v `pwd`:/docker_git -v `pwd`/../services/progmgr-service/service:/docker_in -v `pwd`/module:/docker_out -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git vaeum/alpine-python3-pip3 bash

@@ -1,1 +1,1 @@
-make all INDIR=../services/region-service OUTDIR=./module/Regionxxx MODULE="Regionxxx"
+make all INDIR=../services/progmgr-service OUTDIR=./module/progmgr MODULE="ProgMgr"

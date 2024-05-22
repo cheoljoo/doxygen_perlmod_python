@@ -81,6 +81,8 @@ class Container(object):
         self._puml = ''
         self._filename = ''
         self._inheritance_list  = []
+        self._abstract = False
+        self._template_type = None
 
     @property
     def name(self):
@@ -1099,11 +1101,18 @@ class Diagram(object):
             otherwise, it is assumed to be a filename
         """
         # Parse header file
-        parsed_header = CppHeaderParser.CppHeader(header_file,
+        try: 
+            parsed_header = CppHeaderParser.CppHeader(header_file,
                                                   argType=arg_type)
+        except Exception as e:
+            ae = str(e)
+            ae = ae.replace('rror','_r_r_o_r')
+            print('CppHeaderParser',ae)
+            return
          #print('parsed_header keys',list(parsed_header.__dict__.keys()))
          #pprint({'parsed_header':parsed_header.__dict__})
          #pprint({'parsed_header.classes':parsed_header.classes})
+         #print('parsed_header')
         for container_type, (container_iterator,
                              container_handler) in CONTAINER_TYPE_MAP.items():
             objects = parsed_header.__getattribute__(container_type)
@@ -1425,7 +1434,7 @@ class Diagram(object):
                 json_string = json.dumps(jjson['nesting'], cls=ComplexEncoder)
             except TypeError as e:
                 print(f"Serialization error: {e}")
-                quit(4)
+                 #quit(4)
         return render , jjson
 
 # %% Cleanup object type string
@@ -1619,7 +1628,7 @@ def CreatePlantUMLFile(file_list, output_file=None, output_json_file=None, **dia
         traverse_objects(output_diag_json,tt,0)
     diag_json['objects'] = output_diag_json
     make_inheritance_unknown(diag_json)
-    if output_json_file:
+    if output_json_file and False:
         with open(output_json_file, 'w') as fid:
             json.dump(diag_json,fid,indent = 4,cls=ComplexEncoder)
 
@@ -1709,7 +1718,30 @@ def create_plantuml_file(dj = [], focus_class='',puml_kind='_puml_nomember',exce
 
     if focus_class:
          #print(focus_class)
-        puml += dj['objects'][class_name_index[focus_class]]['_container_type'] + ' ' + focus_class + ' #GreenYellow/LightGoldenRodYellow\n'
+        def get_container_type(d):
+            if d['_container_type'] in ['struct', 'union']:
+                container_type = 'class'
+            else:
+                container_type = d['_container_type']
+            class_str = container_type 
+            abstract = False
+            template_type = None
+            if isinstance(d,dict):
+                abstract = d.get('_abstract',False)
+                template_type = d.get('_template_type',None)
+            else:
+                abstract = d._abstract
+                template_type = d._template_type
+            if abstract:
+                class_str = 'abstract ' + class_str
+            if template_type:
+                class_str += ' <{0}>'.format(template_type)
+            return class_str
+
+         #puml += dj['objects'][class_name_index[focus_class]]['_container_type'] + ' ' + focus_class + ' #GreenYellow/LightGoldenRodYellow\n'
+         #print('dj',dj['objects'][class_name_index[focus_class]])
+         #print(focus_class)
+        puml += get_container_type(dj['objects'][class_name_index[focus_class]]) + ' ' + focus_class + ' #GreenYellow/LightGoldenRodYellow\n'
     puml += '@enduml\n'
 
      #print(puml)
@@ -1737,7 +1769,7 @@ def make_inheritance_unknown(dj):
         child = p['_child'].split('::')[-1]
         parent = p['_parent'].split('::')[-1]
         inherit_pair.append( [child,parent] )
-    pprint(inherit_pair)
+    if debug : pprint( { 'inherit_pair':inherit_pair } )
     for o in dj['objects']:
         '''
         print(type(o))
@@ -1759,7 +1791,7 @@ def make_inheritance_unknown(dj):
              #print('..' , inheritance)
             parent = inheritance.split('::')[-1]
             if [child,parent] not in inherit_pair:
-                print('unknown:', [child,parent]  , o['_name'] , inheritance)
+                if debug : print('unknown:', [child,parent]  , o['_name'] , inheritance)
                 dj['inherit_unknown'].append( {
                         '_parent' : inheritance ,
                         '_child' : o['_name'] , 
@@ -1804,8 +1836,11 @@ def main():
     Arguments are read from the command-line, run with ``--help`` for help.
     """
     parser = argparse.ArgumentParser(description='hpp2plantuml tool.')
+    parser.add_argument('--input-directory', dest='input_directory',
+                        action='append', metavar='HEADER-FILE-DIRECTORY', 
+                        help='input file directory')
     parser.add_argument('-i', '--input-file', dest='input_files',
-                        action='append', metavar='HEADER-FILE', required=True,
+                        action='append', metavar='HEADER-FILE', 
                         help='input file (must be quoted' +
                         ' when using wildcards)')
     parser.add_argument('-o', '--output-file', dest='output_file',
@@ -1827,6 +1862,18 @@ def main():
     parser.add_argument('--version', action='version',
                         version='%(prog)s ' + '0.8.4')
     args = parser.parse_args()
+
+    if not args.input_files:
+        args.input_files = []
+    if args.input_directory:
+        for d in args.input_directory:
+            ow = os.walk(d)
+            for root, dirs, files in ow:
+                for file in files:
+                    if file.split('.')[-1] in ['hpp','h','hxx']:
+                        args.input_files.append(os.path.join(root, file))
+            
+    # print('input_files',args.input_files)
     if len(args.input_files) > 0:
         flag_json = True if args.output_json_file else False
         if args.focus_class.strip():

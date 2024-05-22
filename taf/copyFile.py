@@ -36,11 +36,25 @@ if (__name__ == "__main__"):
     startList = [ x.strip() for x in args.startDirname.split(',') ]
     extList = [ x.strip() for x in args.endExt.split(',') ]
 
+    excludeList = ['mock','unittest','uts']
+    filecnt = 0
+    if args.inDir.find('telephony-service') >= 0 :
+        startList = ['']
     for s in startList:
         for root , dirs,files in os.walk(args.inDir + '/' + s):
             print(root,files)
             for file in files:
+                exclFlag = False
+                for excl in excludeList:
+                    if file.lower().find(excl) >= 0:
+                        exclFlag = True
+                        break
+                if exclFlag :
+                    continue
                 if file.split('.')[-1] in extList:
                     print('copy',os.path.join(root, file), args.destDir)
+                    filecnt += 1
                     shutil.copy(os.path.join(root, file), args.destDir)
         
+    print(sys.argv[0] , 'copy file count :',filecnt)
+    print(sys.argv[0] , 'copy file count :',filecnt , file=sys.stderr)
