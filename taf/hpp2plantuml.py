@@ -1426,6 +1426,7 @@ class Diagram(object):
             for obj in self._nesting_list:
                 jjson['nesting'].append(obj.__dict__)
             # debugging try exception for json
+        '''
             try:
                 json_string = json.dumps(jjson['objects'],cls=ComplexEncoder)
                 json_string = json.dumps(jjson['inherit'], cls=ComplexEncoder)
@@ -1433,8 +1434,9 @@ class Diagram(object):
                 json_string = json.dumps(jjson['dependency'], cls=ComplexEncoder)
                 json_string = json.dumps(jjson['nesting'], cls=ComplexEncoder)
             except TypeError as e:
-                print(f"Serialization error: {e}")
+                print(f"Serialization e_r_r_o_r: {e}")
                  #quit(4)
+        '''
         return render , jjson
 
 # %% Cleanup object type string

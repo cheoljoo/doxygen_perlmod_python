@@ -27,7 +27,7 @@ class DoxyDocsClass :
 
     def run(self):
         if not self.outfile:
-            self.outfile = self.infile + '.html'
+            self.outfile = self.infile.split('/')[-1]+ '.html'
         template = Template(filename=self.infile, input_encoding='utf-8', output_encoding='utf-8')
         self.D['_template__'] = {}
         self.D['_template__']['service'] = self.service
