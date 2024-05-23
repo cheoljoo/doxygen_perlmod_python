@@ -4,6 +4,23 @@ import argparse
 import json
 import shutil
 from pprint import pprint
+from multiprocessing import Pool
+from functools import partial
+import subprocess
+
+prefixDir = '_doc_service_'
+
+def work_func(x,outdir):
+     #print(args.outReportDir , outdir)
+    module = x.replace(prefixDir,'')
+     #print(x,module,flush=True)
+    cmd = '''cd {x}; make -f taf-doc.mk INDIR=_hpp_ OUTDIR={o}/{m} MODULE="{m}" '''.format(x=x,o=outdir,m=module)
+     #print(cmd,flush=True)
+    ret = subprocess.run(cmd,stdout=subprocess.PIPE , stderr=subprocess.PIPE, shell=True,text=True)
+    os.system('stty sane')
+    os.system('stty erase ^H')
+    print(cmd, ret.returncode)
+    return ret.returncode , ret.stdout , ret.stderr
 
 if (__name__ == "__main__"):
     parser = argparse.ArgumentParser(
@@ -36,9 +53,9 @@ if (__name__ == "__main__"):
         type=str,
         default='',
         help='common variant postfix')
+    parser.add_argument( '--parallel', default=False , action="store_true" , help="run parallelly      default : run on single thread")
     args = parser.parse_args()
 
-    prefixDir = '_doc_service_'
     os.makedirs(args.outReportDir,exist_ok=True)
     startList = [ x.strip() for x in args.startDirname.split(',') ]
     extList = [ x.strip() for x in args.endExt.split(',') ]
@@ -50,14 +67,15 @@ if (__name__ == "__main__"):
     for t in os.listdir(args.inDir):
         if os.path.isdir(os.path.join(args.inDir, t)):
             target.append(t)
-    print('target',target)
+    print('target',target,'len',len(target),'modules')
 
     for t in target:
         if t.find('telephony-service') >= 0 :
             inputDir = os.path.join(args.inDir, t)
-            shutil.copy('taf-doc.mk', prefixDir+'telephony-interface')
+            shutil.rmtree(prefixDir+'telephony-interface',ignore_errors=True)
             targetDir = os.path.join(prefixDir+'telephony-interface','_hpp_')
             os.makedirs(targetDir,exist_ok=True)
+            shutil.copy('taf-doc.mk', prefixDir+'telephony-interface')
             for root , dirs,files in os.walk(inputDir + '/interface'):
                 for file in files:
                     exclFlag = False
@@ -68,18 +86,18 @@ if (__name__ == "__main__"):
                     if exclFlag :
                         continue
                     if file.split('.')[-1] in extList:
-                        print('copy',os.path.join(root, file), targetDir)
+                         #print('copy',os.path.join(root, file), targetDir)
                         tname = 'telephony-interface'
                         if tname not in filecnt:
                             filecnt[tname] = 0
                         filecnt[tname] += 1
                         shutil.copy(os.path.join(root, file), targetDir)
             for servicefile in os.listdir(args.inDir + '/' + t + '/service'):
-                print('servicefile:',servicefile)
+                 #print('servicefile:',servicefile)
                 if os.path.isfile(os.path.join(args.inDir + '/' + t + '/service',servicefile)):
-                    print('file:',servicefile)
+                     #print('file:',servicefile)
                     if servicefile.split('.')[-1] in extList:
-                        print('copy',os.path.join(args.inDir + '/' + t + '/service', servicefile), targetDir)
+                         #print('copy',os.path.join(args.inDir + '/' + t + '/service', servicefile), targetDir)
                         tname = 'telephony-interface'
                         if tname not in filecnt:
                             filecnt[tname] = 0
@@ -87,12 +105,13 @@ if (__name__ == "__main__"):
                         shutil.copy(os.path.join(args.inDir + '/' + t + '/service',servicefile), targetDir)
                 elif os.path.isdir(os.path.join(args.inDir + '/' + t + '/service',servicefile)):
                     inputDirSub = os.path.join(args.inDir + '/' + t + '/service', servicefile)
-                    shutil.copy('taf-doc.mk', prefixDir+'telephony-service-'+servicefile)
+                    shutil.rmtree(prefixDir+'telephony-service-'+servicefile,ignore_errors=True)
                     targetDirSub = os.path.join(prefixDir+'telephony-service-'+servicefile,'_hpp_')
                     os.makedirs(targetDirSub,exist_ok=True)
-                    print('dir:',servicefile , inputDirSub , targetDirSub )
+                    shutil.copy('taf-doc.mk', prefixDir+'telephony-service-'+servicefile)
+                     #print('dir:',servicefile , inputDirSub , targetDirSub )
                     for root , dirs,files in os.walk(inputDirSub):
-                        print(files)
+                         #print(files)
                         for file in files:
                             exclFlag = False
                             for excl in excludeList:
@@ -102,7 +121,7 @@ if (__name__ == "__main__"):
                             if exclFlag :
                                 continue
                             if file.split('.')[-1] in extList:
-                                print('copy',os.path.join(root, file), targetDirSub)
+                                 #print('copy',os.path.join(root, file), targetDirSub)
                                 tname = 'telephony-service-'+servicefile
                                 if tname not in filecnt:
                                     filecnt[tname] = 0
@@ -112,9 +131,10 @@ if (__name__ == "__main__"):
                     print('error:' , file)
             continue
         inputDir = os.path.join(args.inDir, t)
-        shutil.copy('taf-doc.mk', prefixDir+t)
+        shutil.rmtree(prefixDir+t,ignore_errors=True)
         targetDir = os.path.join(prefixDir+t,'_hpp_')
         os.makedirs(targetDir,exist_ok=True)
+        shutil.copy('taf-doc.mk', prefixDir+t)
         for s in startList:
             for root , dirs,files in os.walk(inputDir + '/' + s):
                  #print(root,files)
@@ -127,10 +147,55 @@ if (__name__ == "__main__"):
                     if exclFlag :
                         continue
                     if file.split('.')[-1] in extList:
-                        print('copy',os.path.join(root, file), targetDir)
+                         #print('copy',os.path.join(root, file), targetDir)
                         if t not in filecnt:
                             filecnt[t] = 0
                         filecnt[t] += 1
                         shutil.copy(os.path.join(root, file), targetDir)
         
     pprint( {'copy file count of '+sys.argv[0] : filecnt } )
+
+    print('==> Done : create _doc_service_*/_hpp_ , run taf-doc.mk')
+    print()
+
+    ret = subprocess.run('taf_create_docker.sh',stdout=subprocess.PIPE , stderr=subprocess.PIPE, shell=True,text=True)
+    print('taf_create_docker.sh : return code', ret.returncode,flush=True)
+
+    doc_target = []   # get sub directory under services (core/variant)
+    for t in os.listdir('.'):
+        if os.path.isdir(t) and t.startswith(prefixDir):
+            doc_target.append(t)
+    print('doc_target',doc_target , 'len',len(doc_target),'doc targets')
+    if args.parallel:
+        print('parallel running...')
+        num_cores = 32 # 32
+        pool = Pool(num_cores)
+        partial_func = partial(work_func,outdir=args.outReportDir)
+        rt = pool.map(partial_func, doc_target)
+        os.system('stty sane')
+        os.system('stty erase ^H')
+        cnt = 0
+        for r,ro,re in rt:
+            if r:
+                cnt += 1
+                print()
+                print('[',cnt,']','ReturnCode:',r, flush=True)
+                print('Output:',flush=True)
+                print(ro,flush=True)
+                print('Error Output:',flush=True)
+                print(re,flush=True)
+        if cnt :
+            quit(4)
+        print('(p) all success : output is',args.outReportDir)
+    else:
+        print('single running...')
+        for x in doc_target:
+            r,ro,re = work_func(x,outdir=args.outReportDir)
+            if r:
+                print('ReturnCode:',r, flush=True)
+                print('Output:',flush=True)
+                print(ro,flush=True)
+                print('Error Output:',flush=True)
+                print(re,flush=True)
+                quit(4)
+        print('(s) all success : output is',args.outReportDir)
