@@ -1,5 +1,5 @@
 # processMap
-- ![](http://tiger02.lge.com:18080/proxy?fmt=svg&src=https://raw.githubusercontent.com/cheoljoo/doxygen_perlmod_python/main/total.md)
+- ![](img/total.svg)
 
 # doxygen_perlmod_python
 - developers want to use parsed data from doxygen.
