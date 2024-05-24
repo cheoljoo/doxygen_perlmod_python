@@ -43,3 +43,7 @@ tcmd_:
 
 taf_:
 	make -C taf all INDIR=../services/region-service OUTDIR=./module/Regionxxx MODULE="Regionxxx"
+p:
+	echo "! $(CURDIR) : make p"
+	if [ ! -d  processMap ]; then git clone https://github.com/cheoljoo/processMap.git ; else cd processMap; git pull ; fi
+	python3 processMap/draw_pm.py --input doxygen_perlmod_python-processmap.csv
