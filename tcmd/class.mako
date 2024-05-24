@@ -374,7 +374,7 @@ ${ getProxyPlantuml('_plantuml/_all_puml.puml',D) }
 
     <% details = getDetails(doc=v.get('detailed',{}).get('doc',{})) %>\
     ##AA ${ details }
-    % if len(details):
+    % if len(details) and len( [ accessibility for accessibility,v2 in v.items() if accessibility == 'public_methods'] ):
         <% classSubCntL2 += 1 %>
         <h2>${classCnt}.${classSubCntL2}. class details</h2>    
         % for detailsType , detailsContent in details:
