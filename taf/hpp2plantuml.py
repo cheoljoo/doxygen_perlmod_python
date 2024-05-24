@@ -119,9 +119,10 @@ class Container(object):
                 #self._parent = re.sub('[<>]', '', parent['name'])
                 self._parent = '::'.join(self._name.split('::')[:-1])
                 p = parent
-                while p.get('parent') is not None:
-                    p = p.get('parent', None)
-                self._namespace = p['namespace']
+                if isinstance(p,(dict,Class,Enum)):
+                    while p.get('parent') is not None:
+                        p = p.get('parent', None)
+                    self._namespace = p['namespace']
         self._do_parse_members(header_container)
 
     def _do_parse_members(self, header_container):

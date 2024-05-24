@@ -5,15 +5,33 @@ import json
 ret = '<br>'
 pumlFileCount = 1
 
+def existProxyPlantuml(pfile):
+    ans = ''
+    fileList = pfile.split('/')
+    dir = '/'.join(fileList[:-1])
+    file = fileList[-1]
+    nsList = file.split('::')
+    match = ''
+    for i in range(len(nsList)):
+         #print('file',  os.path.join(dir,'::'.join(nsList[i:])) )
+        if os.path.exists(os.path.join(dir,'::'.join(nsList[i:]))):
+            match = os.path.join(dir,'::'.join(nsList[i:]))
+             #print('matched',  os.path.join(dir,'::'.join(nsList[i:])) )
+            break
+     #print('return',  match)
+    return match
+
 def getProxyPlantuml(pfile,D):
     global pumlFileCount
     html = ''
     if os.path.exists(pfile):
-        proxylink = '{proxy}&src={phttp}/{file}'.format(proxy=D['_template__']['myPlantumlServerProxy'] , phttp=D['_template__']['mySrcDirHttp']+'/'+D['_template__']['tcmdoutdir'] if D['_template__']['tcmdoutdir'] else D['_template__']['mySrcDirHttp'], file=pfile.split('/')[-1])
-        html += '''<img id="Image{c}" src="" alt="{pfile}")><br>'''.format(c=pumlFileCount,proxylink=proxylink,pfile=pfile)
+         #proxylink = '{proxy}&src={phttp}/{file}'.format(proxy=D['_template__']['myPlantumlServerProxy'] , phttp=D['_template__']['mySrcDirHttp']+'/'+D['_template__']['tcmdoutdir'] if D['_template__']['tcmdoutdir'] else D['_template__']['mySrcDirHttp'], file=pfile.split('/')[-1])
+        html += '''<img id="Image{c}" src="" alt="{pfile}")><br>'''.format(c=pumlFileCount,pfile=pfile)
         D['_template__']['files'].append(pfile)
          #print('html',html, 'pfile',pfile)
         pumlFileCount += 1
+    else:
+        html += '''<!-- pfile : {p} is not exist -->\n'''.format(p=pfile)
     return html
 
 def getParameters(parameters,detailed_doc):
@@ -314,10 +332,12 @@ ${ getProxyPlantuml('_plantuml/_all_puml.puml',D) }
     % if len( [ accessibility for accessibility,v2 in v.items() if accessibility == 'public_methods'] ):
         <% classCnt += 1 %>\
         <h1>${classCnt}. ${v['name']} class</h1>
-        % if os.path.exists('_plantuml/{c}_puml.puml'.format(c=v['name'])):
+        <% matchedPlantuml = existProxyPlantuml('_plantuml/{c}_puml.puml'.format(c=v['name'])) %>
+        <!-- existProxyPlantuml : _plantuml/${ v['name'] }_puml.puml -> ${matchedPlantuml} -->
+        % if matchedPlantuml:
             <% classSubCntL2 += 1 %>
             <h2>${classCnt}.${classSubCntL2}. class diagram</h2>    
-            ${ getProxyPlantuml('_plantuml/{c}_puml.puml'.format(c=v['name']),D) }
+            ${ getProxyPlantuml(matchedPlantuml,D) }
         % endif
 
         <% classSubCntL2 += 1 %>
@@ -361,12 +381,13 @@ ${ getProxyPlantuml('_plantuml/_all_puml.puml',D) }
             % if detailsType == 'plantuml':
                 <%
                 plantumlCnt += 1
-                with open('_test-{c}.puml'.format(c=plantumlCnt),'w') as f:
-                    f.write('@startuml _test-{c}.png\n'.format(c=plantumlCnt))
+                print('write: _plantuml/_class_detail-{c}.puml'.format(c=plantumlCnt))
+                with open('_plantuml/_class_detail-{c}.puml'.format(c=plantumlCnt),'w') as f:
+                    f.write('@startuml _class_detail-{c}.png\n'.format(c=plantumlCnt))
                     f.write(detailsContent)
                     f.write('\n@enduml\n')
                 %>
-                ${ getProxyPlantuml("_test-{c}.puml".format(c=plantumlCnt),D) }
+                ${ getProxyPlantuml("_plantuml/_class_detail-{c}.puml".format(c=plantumlCnt),D) }
             % else:
                 ${ detailsContent } <br>
             % endif
@@ -416,12 +437,13 @@ ${ getProxyPlantuml('_plantuml/_all_puml.puml',D) }
                             % if detailsType == 'plantuml':
                                 <%
                                 plantumlCnt += 1
-                                with open('_test-{c}.puml'.format(c=plantumlCnt),'w') as f:
-                                    f.write('@startuml _test-{c}.png\n'.format(c=plantumlCnt))
+                                print('write: _plantuml/_member_detail-{c}.puml'.format(c=plantumlCnt))
+                                with open('_plantuml/_member_detail-{c}.puml'.format(c=plantumlCnt),'w') as f:
+                                    f.write('@startuml _member_detail-{c}.png\n'.format(c=plantumlCnt))
                                     f.write(detailsContent)
                                     f.write('\n@enduml\n')
                                 %>
-                                ${ getProxyPlantuml("_test-{c}.puml".format(c=plantumlCnt),D) }
+                                ${ getProxyPlantuml("_plantuml/_member_detail-{c}.puml".format(c=plantumlCnt),D) }
                             % else:
                                 ${ detailsContent } <br>
                             % endif
@@ -447,7 +469,6 @@ window.onload = function() {
         var newSrc = urlSegments.join("/");
         var newSrc2 = "http://tiger02.lge.com:18080/proxy?fmt=svg&src=" + newSrc;
         img.src = newSrc2;
-        //img.src = aa[count]; // Array는 0부터 시작하므로, count에서 1을 빼줍니다.
     }
 }
 </script>

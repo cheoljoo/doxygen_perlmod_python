@@ -11,7 +11,7 @@ class DoxyDocsClass :
     '''
     analyze classes as example. it will print table for class with markdown format
     '''
-    def __init__(self,doxydocs={},infile='',outfile='',debug=False,service='',plantumlServerProxy='',fileHttpUrl='',tcmdoutdir=''):
+    def __init__(self,doxydocs={},infile='',outfile='',debug=False,service='',plantumlServerProxy='',tcmdoutdir=''):
         self.plantumlCnt = 0
         self.ret = '<br>'   # or  '\\n'
 
@@ -21,14 +21,13 @@ class DoxyDocsClass :
         self.debug = debug
         self.service = service
         self.plantumlServerProxy = plantumlServerProxy
-        self.fileHttpUrl = fileHttpUrl
         self.tcmdoutdir = tcmdoutdir
         self.of = None
         self.html = False
 
     def run(self):
         if not self.outfile:
-            self.outfile = self.infile + '.html'
+            self.outfile = self.infile.split('/')[-1]+ '.html'
         template = Template(filename=self.infile, input_encoding='utf-8', output_encoding='utf-8')
         self.D['_template__'] = {}
         self.D['_template__']['service'] = self.service
@@ -38,10 +37,9 @@ class DoxyDocsClass :
         if self.plantumlServerProxy:
             self.D['_template__']['myPlantumlServerProxy'] = self.plantumlServerProxy
         self.D['_template__']['mySrcDirHttp'] = mysetting.mySrcDirHttp
-        if self.fileHttpUrl:
-            self.D['_template__']['mySrcDirHttp'] = self.fileHttpUrl
         self.D['_template__']['tcmdoutdir'] = self.tcmdoutdir
         with open(self.outfile, mode='wb') as f:
+            print('write:',self.outfile)
             f.write(template.render(D=self.D))
             print('! output (html) using mako is {f}'.format(f=os.getcwd()+'/'+self.D['_template__']['tcmdoutdir']+'/'+self.outfile),file=sys.stderr)
             print('! http (html) using mako is {f}'.format(f=self.D['_template__']['mySrcDirHttp']+'/'+self.D['_template__']['tcmdoutdir']+'/'+self.outfile),file=sys.stderr)
@@ -61,7 +59,7 @@ class DoxyDocsClass :
             for source_file in self.D['_template__']['files']:
                 try:
                     destination_file = os.path.join(self.D['_template__']['tcmdoutdir'], os.path.basename(source_file))
-                     #print(f'File copied successfully from {source_file} to {destination_file}')
+                    print(f'File copied successfully from {source_file} to {destination_file}')
                     shutil.copy(source_file, destination_file)
                      #print(f'File copied successfully from {source_file} to {destination_file}')
                 except IOError as e:
@@ -96,11 +94,6 @@ if (__name__ == "__main__"):
         type=str,
         default='',
         help='plantuml proxy server url   ex) http://plantuml.proxy.com:18080/proxy?fmt=svg')
-    parser.add_argument( '--fileHttpUrl',
-        metavar="<str>",
-        type=str,
-        default='',
-        help='plantuml file http url    ex) http://plantuml.file.com/cheoljoo.lee/code : this directory includes _plantuml directory')
     parser.add_argument( '--tcmdoutdir',
         metavar="<str>",
         type=str,
@@ -108,5 +101,6 @@ if (__name__ == "__main__"):
         help='output directory for tcmd to gather serviced files')
     args = parser.parse_args()
 
-    ddc = DoxyDocsClass(doxydocs=DoxyDocs.D,infile=args.infile,outfile=args.outfile,debug=args.debug,service=args.service,plantumlServerProxy=args.plantumlServerProxy,fileHttpUrl=args.fileHttpUrl,tcmdoutdir=args.tcmdoutdir)
+    print('====start',sys.argv[0])
+    ddc = DoxyDocsClass(doxydocs=DoxyDocs.D,infile=args.infile,outfile=args.outfile,debug=args.debug,service=args.service,plantumlServerProxy=args.plantumlServerProxy,tcmdoutdir=args.tcmdoutdir)
     ddc.run()

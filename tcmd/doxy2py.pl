@@ -32,7 +32,11 @@ sub generate_cc($$) {
 		foreach $key (keys %{$doc}) {
 			if( not ( (${$doc}{$key} =~ /^ARRAY\(/) || (${$doc}{$key} =~ /^HASH\(/) ) ){
 				#print "hash $str { $key } = value( ${$doc}{$key} )\n";
-				print PH "$ps ['$key'] =  \'\'\'" . change_special_code(${$doc}{$key}) . "\'\'\'\n";
+                if( change_special_code(${$doc}{$key}) =~ /'$/){
+				    print PH "$ps ['$key'] =  \"\"\"" . change_special_code(${$doc}{$key}) . "\"\"\"\n";
+                } else {
+				    print PH "$ps ['$key'] =  \'\'\'" . change_special_code(${$doc}{$key}) . "\'\'\'\n";
+                }
 				 #print PH "$ps ['$key'] =  \"" . change_special_code(${$doc}{$key}) . "\"\n";
 			} else {
 				generate_cc("$str { $key }",  ${$doc}{$key});
