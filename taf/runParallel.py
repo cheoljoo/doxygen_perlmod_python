@@ -177,7 +177,7 @@ if (__name__ == "__main__"):
         print('stderr output:')
         print(ret.stderr,flush=True)
 
-    ele : 
+    else : 
         print('==> Done : make running environment')
         print()
 
