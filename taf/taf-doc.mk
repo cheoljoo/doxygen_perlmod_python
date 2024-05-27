@@ -15,8 +15,9 @@ endif
 	if [ ! -e mysetting.py ]; then cp -f ../../src/mysetting_example.py mysetting.py; fi
 	rm -f plantuml.md plantuml.json
 	rm -rf _output_ _plantuml DoxyDocs.pm DoxyDocs.py
-	echo "doxgen"
-	-doxygen  ../Doxyfile  > doxygen_perlmod_python.log  2>&1        # _hpp_
+	which doxygen
+	echo "doxygen"
+	-doxygen  ../Doxyfile      # _hpp_
 	echo "DoxyDocs.pm is used for this document" 
 	cp -f _output_/perlmod/DoxyDocs.pm . 
 	echo "doxy2py.pl" 
