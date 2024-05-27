@@ -171,8 +171,15 @@ if (__name__ == "__main__"):
 
     ret = subprocess.run('taf_create_docker.sh',stdout=subprocess.PIPE , stderr=subprocess.PIPE, shell=True,text=True)
     print('taf_create_docker.sh : return code', ret.returncode,flush=True)
-    print('==> Done : make running environment')
-    print()
+    if ret.returncode:
+        print('stdout output:')
+        print(ret.stdout,flush=True)
+        print('stderr output:')
+        print(ret.stderr,flush=True)
+
+    ele : 
+        print('==> Done : make running environment')
+        print()
 
     doc_target = []   # get sub directory under services (core/variant)
     for t in os.listdir('.'):
