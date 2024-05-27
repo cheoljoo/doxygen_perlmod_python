@@ -1,5 +1,5 @@
 # docker image (doxygen_perlmod_python:latest) is created from docker image(vaeum/alpine-python3-pip3) with taf_install.sh
-# docker run -it  --user `id -u`:`id -g`  -v  `pwd`:/docker_in -v `pwd`/op:/docker_out -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_in doxygen_perlmod_python:latest  bash /docker_in/taf_run.sh
+# docker run --user `id -u`:`id -g`  -v  `pwd`:/docker_in -v `pwd`/op:/docker_out -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_in doxygen_perlmod_python:latest  bash /docker_in/taf_run.sh
 umask 000
 chmod 777 -R ${DOCKER_OUT}
 echo "DOCKER_IN ${DOCKER_IN}"

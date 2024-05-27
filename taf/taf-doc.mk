@@ -24,8 +24,8 @@ endif
 	-perl ../doxy2py.pl
 	-echo "mkdir -p ${OUTDIR}" 
 	-mkdir -p ${OUTDIR}
-	echo "docker run -it --rm  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`/..:/docker_git -v `pwd`:/docker_now -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE=${MODULE} doxygen_perlmod_python:latest  bash /docker_git/taf-doc_run_in_docker.sh"
-	docker run -it --rm  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`/..:/docker_git -v `pwd`:/docker_now -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE="${MODULE}" doxygen_perlmod_python:latest  bash /docker_git/taf-doc_run_in_docker.sh
+	echo "docker run --rm  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`/..:/docker_git -v `pwd`:/docker_now -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE=${MODULE} doxygen_perlmod_python:latest  bash /docker_git/taf-doc_run_in_docker.sh"
+	docker run --rm  --user `id -u`:`id -g`  -v `pwd`/_hpp_:/docker_in -v `realpath ${OUTDIR}`:/docker_out -v `pwd`/..:/docker_git -v `pwd`:/docker_now -e DOCKER_IN=/docker_in -e DOCKER_OUT=/docker_out -e DOCKER_GIT=/docker_git -e DOCKER_MODULE="${MODULE}" doxygen_perlmod_python:latest  bash /docker_git/taf-doc_run_in_docker.sh
 	echo "OUTPUT directory : ${newOUTDIR}"
 	if [ -e doxygen_perlmod_python.log ]; then echo "copy doxygen_perlmod_python.log ${OUTDIR}"; cp -f doxygen_perlmod_python.log ${OUTDIR} ; fi
 	if [ -e DoxyDocs.py ]; then echo "copy DoxyDocs.py ${OUTDIR}"; cp -f DoxyDocs.py ${OUTDIR} ; fi

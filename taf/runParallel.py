@@ -17,8 +17,8 @@ def work_func(x,outdir):
     cmd = '''cd {x}; make -f taf-doc.mk INDIR=_hpp_ OUTDIR={o}/{m} MODULE="{m}" '''.format(x=x,o=outdir,m=module)
      #print(cmd,flush=True)
     ret = subprocess.run(cmd,stdout=subprocess.PIPE , stderr=subprocess.PIPE, shell=True,text=True)
-    os.system('stty sane')
-    os.system('stty erase ^H')
+     #os.system('stty sane')   # if you remove -it in docker , you can keep your stty status
+     #os.system('stty erase ^H')   # if you remove -it in docker , you can keep your stty status
     print(cmd, ret.returncode)
     return ret.returncode , ret.stdout , ret.stderr
 
@@ -196,8 +196,8 @@ if (__name__ == "__main__"):
         pool = Pool(num_cores)
         partial_func = partial(work_func,outdir=args.outReportDir)
         rt = pool.map(partial_func, doc_target)
-        os.system('stty sane')
-        os.system('stty erase ^H')
+         #os.system('stty sane')   # if you remove -it in docker , you can keep your stty status
+         #os.system('stty erase ^H')   # if you remove -it in docker , you can keep your stty status
         cnt = 0
         for r,ro,re in rt:
             if r:
