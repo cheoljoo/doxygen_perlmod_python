@@ -169,6 +169,9 @@ if (__name__ == "__main__"):
     print('==> Done : create _doc_service_*/_hpp_ , run taf-doc.mk')
     print()
 
+    ret = os.system('bash taf_create_docker.sh')
+    print('taf_create_docker.sh : return code', ret,flush=True)
+    '''
     ret = subprocess.run('bash taf_create_docker.sh',stdout=subprocess.PIPE , stderr=subprocess.PIPE, shell=True,text=True)
     print('taf_create_docker.sh : return code', ret.returncode,flush=True)
     if ret.returncode:
@@ -179,6 +182,7 @@ if (__name__ == "__main__"):
 
     else : 
         print('==> Done : make running environment')
+    '''
     print(flush=True)
 
     doc_target = []   # get sub directory under services (core/variant)
