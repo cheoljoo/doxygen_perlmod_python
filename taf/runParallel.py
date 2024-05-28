@@ -102,7 +102,7 @@ if (__name__ == "__main__"):
                             filecnt[tname] = 0
                         filecnt[tname] += 1
                         shutil.copy(os.path.join(root, file), targetDir)
-            for servicefile in os.listdir(args.inDir + '/' + t + '/service'):
+            for servicefile in os.listdir(args.inDir + '/' + t + '/service') if os.path.exists(args.inDir + '/' + t + '/service') else []:
                  #print('servicefile:',servicefile)
                 if os.path.isfile(os.path.join(args.inDir + '/' + t + '/service',servicefile)):
                      #print('file:',servicefile)
