@@ -9,6 +9,7 @@ else
     echo "taf_create_docker.sh: exist doxygen_perlmod_python image"
 fi
 
+hostname
 docker images
 
 image_exists=$(docker images | grep "doxygen_perlmod_python")
