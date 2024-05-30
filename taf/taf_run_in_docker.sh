@@ -8,4 +8,4 @@ echo "DOCKER_OUT ${DOCKER_OUT}"
 echo "DOCKER_MODULE ${DOCKER_MODULE}"
 #ls -l  ${DOCKER_OUT}
 cd ${DOCKER_GIT}; python3 hpp2plantuml.py --input-directory=${DOCKER_IN} -o all.puml -j out.json
-cd ${DOCKER_GIT}; python3 sample-mako.py --infile=class.mako --service="${DOCKER_MODULE}"  --plantumlServerProxy="http://tiger02.lge.com:18080/proxy?fmt=svg"  --tcmdoutdir=${DOCKER_OUT}
+cd ${DOCKER_GIT}; python3 sample-mako.py --infile=class.mako --service="${DOCKER_MODULE}"  --plantumlServerProxy="http://tiger02.lge.com:18080/proxy?fmt=svg"  --tcmdoutdir=${DOCKER_OUT} --outfile="index.html"
