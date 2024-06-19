@@ -14,7 +14,7 @@ def work_func(x,outdir):
      #print(args.outReportDir , outdir)
     module = x.replace(prefixDir,'')
      #print(x,module,flush=True)
-    cmd = '''cd {x}; make -f taf-doc.mk INDIR=_hpp_ OUTDIR={o}/{m} MODULE="{m}" '''.format(x=x,o=outdir,m=module)
+    cmd = '''cd {x}; make -f {mk} INDIR=_hpp_ OUTDIR={o}/{m} MODULE="{m}" '''.format(mk=args.mk,x=x,o=outdir,m=module)
      #print(cmd,flush=True)
     ret = subprocess.run(cmd,stdout=subprocess.PIPE , stderr=subprocess.PIPE, shell=True,text=True)
      #os.system('stty sane')   # if you remove -it in docker , you can keep your stty status
@@ -38,6 +38,11 @@ if (__name__ == "__main__"):
         type=str,
         default='service,include,interface',
         help='several starting directory name with comma in <inDir>')
+    parser.add_argument( '--mk',
+        metavar="<str>",
+        type=str,
+        default='taf-doc.mk',
+        help='make file for each module')
     parser.add_argument( '--endExt',
         metavar="<str>",
         type=str,
@@ -84,8 +89,9 @@ if (__name__ == "__main__"):
             inputDir = os.path.join(args.inDir, t)
             shutil.rmtree(prefixDir+'telephony-interface'+args.variant,ignore_errors=True)
             targetDir = os.path.join(prefixDir+'telephony-interface'+args.variant,'_hpp_')
+            print('==========telephony-service : ',targetDir , '  excludeList:',excludeList)
             os.makedirs(targetDir,exist_ok=True)
-            shutil.copy('taf-doc.mk', prefixDir+'telephony-interface'+args.variant)
+            shutil.copy(args.mk, prefixDir+'telephony-interface'+args.variant)
             for root , dirs,files in os.walk(inputDir + '/interface'):
                 for file in files:
                     exclFlag = False
@@ -96,18 +102,18 @@ if (__name__ == "__main__"):
                     if exclFlag :
                         continue
                     if file.split('.')[-1] in extList:
-                         #print('copy',os.path.join(root, file), targetDir)
+                        print('copy',os.path.join(root, file), targetDir)
                         tname = 'telephony-interface'+args.variant
                         if tname not in filecnt:
                             filecnt[tname] = 0
                         filecnt[tname] += 1
                         shutil.copy(os.path.join(root, file), targetDir)
             for servicefile in os.listdir(args.inDir + '/' + t + '/service') if os.path.exists(args.inDir + '/' + t + '/service') else []:
-                 #print('servicefile:',servicefile)
+                print('servicefile:',servicefile)
                 if os.path.isfile(os.path.join(args.inDir + '/' + t + '/service',servicefile)):
-                     #print('file:',servicefile)
+                    print('file:',servicefile)
                     if servicefile.split('.')[-1] in extList:
-                         #print('copy',os.path.join(args.inDir + '/' + t + '/service', servicefile), targetDir)
+                        print('copy',os.path.join(args.inDir + '/' + t + '/service', servicefile), targetDir)
                         tname = 'telephony-interface'+args.variant
                         if tname not in filecnt:
                             filecnt[tname] = 0
@@ -118,10 +124,10 @@ if (__name__ == "__main__"):
                     shutil.rmtree(prefixDir+'telephony-service-'+servicefile+args.variant,ignore_errors=True)
                     targetDirSub = os.path.join(prefixDir+'telephony-service-'+servicefile+args.variant,'_hpp_')
                     os.makedirs(targetDirSub,exist_ok=True)
-                    shutil.copy('taf-doc.mk', prefixDir+'telephony-service-'+servicefile+args.variant)
-                     #print('dir:',servicefile , inputDirSub , targetDirSub )
+                    shutil.copy(args.mk, prefixDir+'telephony-service-'+servicefile+args.variant)
+                    print('dir:',servicefile , inputDirSub , targetDirSub )
                     for root , dirs,files in os.walk(inputDirSub):
-                         #print(files)
+                        print(files)
                         for file in files:
                             exclFlag = False
                             for excl in excludeList:
@@ -131,7 +137,7 @@ if (__name__ == "__main__"):
                             if exclFlag :
                                 continue
                             if file.split('.')[-1] in extList:
-                                 #print('copy',os.path.join(root, file), targetDirSub)
+                                print('copy',os.path.join(root, file), targetDirSub)
                                 tname = 'telephony-service-'+servicefile+args.variant
                                 if tname not in filecnt:
                                     filecnt[tname] = 0
@@ -144,7 +150,7 @@ if (__name__ == "__main__"):
         shutil.rmtree(prefixDir+t+args.variant,ignore_errors=True)
         targetDir = os.path.join(prefixDir+t+args.variant,'_hpp_')
         os.makedirs(targetDir,exist_ok=True)
-        shutil.copy('taf-doc.mk', prefixDir+t+args.variant)
+        shutil.copy(args.mk, prefixDir+t+args.variant)
         for s in startList:
             for root , dirs,files in os.walk(inputDir + '/' + s):
                  #print(root,files)
@@ -166,7 +172,7 @@ if (__name__ == "__main__"):
         
     pprint( {'copy file count of '+sys.argv[0] : filecnt } )
 
-    print('==> Done : create _doc_service_*/_hpp_ , run taf-doc.mk')
+    print('==> Done : create _doc_service_*/_hpp_ , run {mk}'.format(mk=args.mk))
     print()
 
     ret = os.system('bash taf_create_docker.sh')
@@ -190,6 +196,9 @@ if (__name__ == "__main__"):
         if os.path.isdir(t) and t.startswith(prefixDir):
             doc_target.append(t)
     print('doc_target',doc_target , 'len',len(doc_target),'doc targets')
+
+
+
     if args.parallel:
         print('parallel running...')
         num_cores = 32 # 32

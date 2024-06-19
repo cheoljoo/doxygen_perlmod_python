@@ -1,5 +1,0 @@
-IdrManagerService.h
-gps.h
-drCommand.h
-IdrManagerServiceType.h
-IdrManagerReceiver.h

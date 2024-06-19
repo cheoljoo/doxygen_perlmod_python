@@ -19,6 +19,7 @@ endif
 	echo "doxgen_flowchart"
 	-./doxygen_flowchart Doxyfile.flowchart > /dev/null  2>&1   # _all_
 	rm -rf _output_ _plantuml DoxyDocs.pm DoxyDocs.py
+	touch plantuml.jar
 	echo "doxgen"
 	doxygen  >> doxygen_perlmod_python.log  2>&1        # _hpp_
 	echo "DoxyDocs.pm is used for this document" 

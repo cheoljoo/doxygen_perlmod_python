@@ -1738,13 +1738,17 @@ def create_plantuml_file(dj = [], focus_class='',puml_kind='_puml_nomember',exce
             if abstract:
                 class_str = 'abstract ' + class_str
             if template_type:
-                class_str += ' <{0}>'.format(template_type)
-            return class_str
+                template_type = '<{0}>'.format(template_type)
+            return class_str , template_type
 
          #puml += dj['objects'][class_name_index[focus_class]]['_container_type'] + ' ' + focus_class + ' #GreenYellow/LightGoldenRodYellow\n'
          #print('dj',dj['objects'][class_name_index[focus_class]])
          #print(focus_class)
-        puml += get_container_type(dj['objects'][class_name_index[focus_class]]) + ' ' + focus_class + ' #GreenYellow/LightGoldenRodYellow\n'
+        class_str , template_type = get_container_type(dj['objects'][class_name_index[focus_class]])
+        if template_type :
+            puml += class_str + ' ' + focus_class + ' ' + template_type + ' #GreenYellow/LightGoldenRodYellow\n'
+        else:
+            puml += class_str + ' ' + focus_class + ' #GreenYellow/LightGoldenRodYellow\n'
     puml += '@enduml\n'
 
      #print(puml)

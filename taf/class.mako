@@ -413,7 +413,7 @@ ${ getProxyPlantuml('_plantuml/_all_puml.puml',D) }
                         params = getParameters(parameters=t.get('parameters',{}),detailed_doc=t.get('detailed',{}).get('doc',{}))
                     %>
                     <% classMemCntL3 += 1 %>
-                    <h3>${classCnt}.${classSubCntL2}.${classMemCntL3}. ${returnType} ${ func }( ${ ' , '.join(params['parameters']) })</h3>      
+                    <h3>${classCnt}.${classSubCntL2}.${classMemCntL3}. ${returnType} ${v['name']}::${ func }( ${ ' , '.join(params['parameters']) })</h3>
                     ##${ params } <br>
                     % if params['in']:
                     <h4>parameters [in]</h4>

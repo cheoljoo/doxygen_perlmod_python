@@ -285,7 +285,7 @@ def getDescription(doc):
 
 <% 
     fcJson = {}
-    with open('plantuml.json','r') as f:
+    with open('fcJson.json','r') as f:
         fcJson = json.load(f)
 %>
 
@@ -397,15 +397,16 @@ ${ getProxyPlantuml('_plantuml/_all_puml.puml',D) }
                         returnDoc = ret.join(getReturnDescription(doc=t.get('detailed',{}).get('doc',{})))
                         # params = { 'parameters': [] , 'in':[] , 'out':[] }
                         params = getParameters(parameters=t.get('parameters',{}),detailed_doc=t.get('detailed',{}).get('doc',{}))
-                        myfunc = returnType + ' ' + func + '(' + ' , '.join(params['parameters']) + ')'
+                        myfunc = returnType + ' ' + v['name'] + '::' + func + '(' + ' , '.join(params['parameters']) + ')'
                         myfunc_no_space = myfunc.replace(' ','')
                     %>
                     <% classMemCntL3 += 1 %>
-                    <h3>${classCnt}.${classSubCntL2}.${classMemCntL3}. ${returnType} ${ func }( ${ ' , '.join(params['parameters']) })</h3>      
-                    <!-- fcJson ${ 'fff ' + myfunc if myfunc_no_space in fcJson['json'].keys() else 'not'   } -->
+                    <h3>${classCnt}.${classSubCntL2}.${classMemCntL3}. ${returnType} ${v['name']}::${ func }( ${ ' , '.join(params['parameters']) })</h3>      
+                    <!-- fcJson ${ 'ffffff ' + myfunc if myfunc_no_space in fcJson else 'not'   } -->
                     <!-- myfunc ${myfunc} -->
+                    <!-- plantumlfile ${fcJson[myfunc_no_space]['plantumlfile'] if myfunc_no_space in fcJson else ''} -->
                     <!-- myfunc_no_space ${myfunc_no_space} -->
-                    <!-- fcJson ${ fcJson['json'].keys()  } -->
+                    <!-- fcJson ${ fcJson.keys()  } -->
                     ##${ params } <br>
                     % if params['in']:
                     <h4>parameters [in]</h4>
@@ -441,29 +442,29 @@ ${ getProxyPlantuml('_plantuml/_all_puml.puml',D) }
                             % endif
                         % endfor
                     % endif
-                    % if myfunc_no_space in fcJson['json'].keys():
+                    % if myfunc_no_space in fcJson:
                         <h4>member flow chart and sequence diagram</h4>
                         <table>
                             <tr><th>flow chart</th><th>sequence diagram</th></tr>
                             <tr>
                                 <td>
-                        % if fcJson['json'][myfunc_no_space].get('flowchart',[]):
+                        % if fcJson[myfunc_no_space].get('puml',[]):
                             <%
                             plantumlCnt += 1
                             print('write: _test-{c}.puml : flowchart {f}'.format(c=plantumlCnt,f=myfunc))
-                            with open('_test-{c}.puml'.format(c=plantumlCnt),'w') as f:
-                                f.write('\n'.join(fcJson['json'][myfunc_no_space]['flowchart']))
+                            with open(fcJson[myfunc_no_space]['plantumlfile'],'w') as f:
+                                f.write(fcJson[myfunc_no_space]['puml'])
                             %>
-                            ${ getProxyPlantuml("_test-{c}.puml".format(c=plantumlCnt),D) }
+                            ${ getProxyPlantuml(fcJson[myfunc_no_space]['plantumlfile'],D) }
                         % endif
                                 </td>
                                 <td>
-                        % if fcJson['json'][myfunc_no_space].get('sequencediagram',[]):
+                        % if fcJson[myfunc_no_space].get('sequencediagram',[]):
                             <%
                             plantumlCnt += 1
                             print('write: _test-{c}.puml : sequencediagram {f}'.format(c=plantumlCnt,f=myfunc))
                             with open('_test-{c}.puml'.format(c=plantumlCnt),'w') as f:
-                                f.write('\n'.join(fcJson['json'][myfunc_no_space]['sequencediagram']))
+                                f.write('\n'.join(fcJson[myfunc_no_space]['sequencediagram']))
                             %>
                             ${ getProxyPlantuml("_test-{c}.puml".format(c=plantumlCnt),D) }
                         % endif
